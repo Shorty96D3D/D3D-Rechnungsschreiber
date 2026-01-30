@@ -46,7 +46,7 @@ display: flex; flex-direction: column; gap: 8px;
 .btn-s {
 width: 36px; height: 36px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-font-size: 20px; font-weight: bold; line-height: 1;
+font-size: 26px; font-weight: bold; line-height: 1;
 }
 
 /* Header */
@@ -103,7 +103,7 @@ input { border: none !important; }
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
 <button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
@@ -111,7 +111,7 @@ input { border: none !important; }
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
+<textarea id="adrImport" placeholder="-Adresse hier einfügen-"></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
@@ -139,11 +139,11 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
+<input type="text" id="rec-name" placeholder="Name">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -166,7 +166,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <div id="statusSection">
 <select id="statusSelect" class="no-print" onchange="updateStatus()">
-<option value="">Zahlstatus wählen...</option>
+<option value="">Zahlungshinweis</option>
 <option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
 <option value="Offen">Offen</option>
@@ -182,8 +182,8 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
+<div><strong>Kontakt</strong><br>Email: kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
 <div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
@@ -407,3 +407,4 @@ init();
 </script>
 </body>
 </html>
+
