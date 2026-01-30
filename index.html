@@ -19,7 +19,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--ui-bg); col
 .container {
 max-width: 900px; margin: auto; background: var(--doc-white); color: black;
 padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
-box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: visible;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
 .no-print {
@@ -64,24 +64,24 @@ transition: 0.1s; font-size: 18px; font-weight: bold;
 .recipient { margin: 5px 0 15px 0; width: 350px; }
 .recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
 
-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
-td { border: 1px solid #000; padding: 4px; position: relative; }
+td { border: 1px solid #000; padding: 4px; position: relative; overflow: visible; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Positions-Buttons: Optimierte Ausrichtung und ohne schwarzen Rand */
+/* Positions-Buttons: Absolut ohne Rand und weiter rechts platziert */
 .row-btns {
-position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
-display: flex; gap: 5px; align-items: center; z-index: 10;
+position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+display: flex; gap: 4px; align-items: center; z-index: 99;
 }
 .btn-action {
-width: 24px; height: 24px; border-radius: 5px; border: none !important;
+width: 26px; height: 26px; border-radius: 6px;
+border: none !important; outline: none !important;
 cursor: pointer; display: flex; align-items: center; justify-content: center;
-color: white !important; font-size: 14px; font-weight: bold;
-box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: 0.1s;
-outline: none !important;
+color: white !important; font-size: 15px; font-weight: bold;
+box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: 0.1s;
 }
-.btn-action:active { transform: scale(0.9); }
+.btn-action:active { transform: scale(0.9) translateY(-50%); }
 .btn-action.check { background: #2ecc71 !important; }
 .btn-action.del { background: #ff4757 !important; }
 
@@ -157,11 +157,11 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <thead>
 <tr>
 <th style="width:5%">Pos.</th>
-<th style="width:45%">Bezeichnung</th>
+<th style="width:40%">Bezeichnung</th>
 <th style="width:10%">Anzahl</th>
-<th style="width:10%">Einheit</th>
+<th style="width:12%">Einheit</th>
 <th style="width:15%">Preis (€)</th>
-<th style="width:15%">Gesamt (€)</th>
+<th style="width:18%">Gesamt (€)</th>
 </tr>
 </thead>
 <tbody id="itemsBody"></tbody>
