@@ -81,17 +81,17 @@ header, footer, aside, nav, .page-url, .page-title { display: none !important; }
 <body>
 
 <div class="no-print">
-<button onclick="window.print()">🖨️ PDF / DRUCKEN</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ Zeile</button>
+<button onclick="window.print()">🖨️ DRUCKEN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ Position</button>
 <button onclick="saveProduct()" style="background: #34495e;">💾 Bezeichnung speichern</button>
-<button onclick="toggleType()" id="typeBtn" style="background: #9b59b6;">ZU ANGEBOT</button>
+<button onclick="toggleType()" id="typeBtn" style="background: #9b59b6;">ZU ANGEBOT wechseln</button>
 </div>
 
 <div class="container">
 <div class="header-main">
 <div class="addr-left">
 <h2>D3D</h2>
-Graf-Sempt-Str. 27, 85601 Forstinning<br>
+Graf-Sempt-Str. 27, 85661 Forstinning<br>
 Deutschland
 </div>
 <div class="title-center" id="docType">Rechnung</div>
@@ -114,6 +114,7 @@ Deutschland
 <input type="text" placeholder="Vorname Nachname">
 <input type="text" placeholder="Straße Hausnummer">
 <input type="text" placeholder="PLZ Ort">
+<input type="text" placeholder="Tel.-Nr. (optional)">
 </div>
 
 <p style="font-size: 13px;">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -136,7 +137,6 @@ Deutschland
 <div class="no-print">
 <select id="statusSelect" onchange="updateStatus()">
 <option value="">Status wählen...</option>
-<option value="Bereits bezahlt (eBay)">Bereits bezahlt (eBay)</option>
 <option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
 </select>
@@ -152,10 +152,10 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85601 Forstinning</div>
-<div><strong>Kontakt</strong><br>E-Mail: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuern</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bank</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
+<div><strong>Kontaktinformation</strong><br>E-Mail: kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
+<div><strong>Steuerninformation</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455697359-00001</div>
+<div><strong>Bankverbindung</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -184,7 +184,7 @@ row.innerHTML = `
 <td>${body.rows.length}</td>
 <td><input class="table-input prod-name" list="prodList" placeholder="Bezeichnung..."></td>
 <td><input type="number" class="table-input" value="1" oninput="calc()"></td>
-<td><input class="table-input" value="Stück"></td>
+<td><input class="table-input" value="Stk."></td>
 <td><input type="number" class="table-input" value="0.00" step="0.01" oninput="calc()"></td>
 <td class="row-total">0.00</td>
 `;
@@ -233,3 +233,4 @@ init();
 </script>
 </body>
 </html>
+
