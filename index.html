@@ -43,13 +43,12 @@ display: flex; flex-direction: column; gap: 8px;
 .ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
 .ship-btns { display: flex; gap: 8px; }
 
-/* Versand-Manager: Maximale Symbolgröße */
+/* Versand-Manager: Einheitliche Button-Größe */
 .btn-s {
-width: 45px; height: 45px; border-radius: 6px; border: none; cursor: pointer;
+width: 35px; height: 35px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-transition: 0.1s;
+transition: 0.1s; font-size: 18px; font-weight: bold;
 }
-.btn-s span { font-size: 32px; font-weight: bold; display: block; line-height: 1; }
 .btn-s:active { transform: scale(0.9); }
 
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
@@ -61,6 +60,7 @@ transition: 0.1s;
 .meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
+.meta-note { font-size: 9px; text-align: right; margin-top: 2px; color: #444; font-weight: bold; }
 
 .recipient { margin: 5px 0 15px 0; width: 350px; }
 .recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
@@ -70,21 +70,21 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Positions-Buttons: Komplett transparent, kein Rahmen, keine Balken */
+/* Positions-Buttons: Abgerundete farbige Kästchen mit weißem Icon */
 .row-btns {
-position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
-display: flex; gap: 12px; align-items: center;
+position: absolute; right: -70px; top: 50%; transform: translateY(-50%);
+display: flex; gap: 8px; align-items: center;
 background: none !important; border: none !important;
 }
 .btn-action {
-background: none !important; border: none !important;
-cursor: pointer; padding: 0; margin: 0;
-font-size: 22px; font-weight: bold; line-height: 1;
-transition: 0.1s;
+width: 28px; height: 28px; border-radius: 6px; border: none !important;
+cursor: pointer; display: flex; align-items: center; justify-content: center;
+color: white !important; font-size: 16px; font-weight: bold;
+box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.1s;
 }
-.btn-action:active { transform: scale(0.8); }
-.btn-action.check { color: #2ecc71 !important; } /* Nur das grüne Icon */
-.btn-action.del { color: #ff4757 !important; } /* Nur das rote X */
+.btn-action:active { transform: scale(0.9); }
+.btn-action.check { background: #2ecc71 !important; }
+.btn-action.del { background: #ff4757 !important; }
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
@@ -109,7 +109,7 @@ input::placeholder { color: transparent !important; opacity: 0 !important; }
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
 <button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
@@ -117,7 +117,7 @@ input::placeholder { color: transparent !important; opacity: 0 !important; }
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="--Adresse hier reinkopieren--"></textarea>
+<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
@@ -138,17 +138,18 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
 <div class="meta-row"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
 <div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
+<div class="meta-note">(Rechnungsnummer bei Zahlung bitte angeben)</div>
 </div>
 </div>
 </div>
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Name">
+<input type="text" id="rec-name" placeholder="Vorname Nachname">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
+<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -187,10 +188,10 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontaktinformation</strong><br>kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
-<div><strong>Steuerinformation</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bankverbindung</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -222,7 +223,7 @@ row.className = 'ship-row';
 row.innerHTML = `
 <div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
 <div class="ship-btns">
-<button class="btn-s" style="background:#2ecc71" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen"><span>+</span></button>
+<button class="btn-s" style="background:#2ecc71" onclick="addShipping(${index})" title="Hinzufügen"><span>+</span></button>
 <button class="btn-s" style="background:#00a8ff" onclick="editShipping(${index})" title="Bearbeiten"><span>⚙</span></button>
 <button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})" title="Löschen"><span>✕</span></button>
 </div>
