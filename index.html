@@ -19,8 +19,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--ui-bg); col
 .container {
 max-width: 900px; margin: auto; background: var(--doc-white); color: black;
 padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
-box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-position: relative;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
 /* Toolbar */
@@ -33,6 +32,10 @@ padding: 15px; border-radius: 10px;
 width: 100%; padding: 10px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 12px; transition: 0.2s;
 }
+
+.import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
+.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; }
+
 .shipping-ctrl {
 grid-column: span 3; display: flex; gap: 10px; align-items: center;
 background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px;
@@ -52,23 +55,28 @@ background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px;
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 
+/* Empfänger */
+.recipient { margin: 5px 0 15px 0; width: 350px; }
+.recipient input { display: block; width: 100%; border: none; padding: 3px 0; font-size: 13px; color: black; background: transparent; }
+
 /* Tabelle */
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
 
-/* Zeilen Buttons */
-.btn-wrap { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
-.row-btn { width: 22px; height: 22px; border: none; border-radius: 50%; cursor: pointer; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-.btn-check { background: #2ecc71; }
-.btn-del { background: #ff4757; }
+/* Zeilen Buttons - sauber ausgerichtet */
+.row-btns { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; background: transparent; }
+.btn-action { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; }
+.btn-perso { background: #2ecc71; }
+.btn-remove { background: #ff4757; }
 
+/* Summe & Status */
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
-#statusSelect { margin-top: 8px; font-size: 11px; }
-#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; background: white; }
+#statusSelect { margin-top: 8px; background: white; color: black; border: 1px solid #ccc; font-size: 11px; padding: 3px; border-radius: 4px; }
+#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; background: white; padding: 2px 5px; }
 
 .footer-wrap { margin-top: auto; }
 .legal { font-size: 10px; line-height: 1.4; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 5px; }
@@ -77,9 +85,10 @@ td { border: 1px solid #000; padding: 4px; position: relative; }
 @media print {
 @page { size: A4; margin: 0; }
 body { background: white; padding: 0; }
-.no-print, .btn-wrap { display: none !important; }
-.container { box-shadow: none; padding: 1.5cm 1.5cm 1cm 1.5cm; width: 100%; min-height: 297mm; }
+.no-print, .row-btns { display: none !important; }
+.container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; }
 .footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
+input::placeholder { color: transparent !important; }
 .meta-box { background-color: #f0f0f0 !important; }
 }
 </style>
@@ -87,15 +96,21 @@ body { background: white; padding: 0; }
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
-<button onclick="addItem(true)" style="background: #2ecc71;">+ POSITION</button>
+<div class="import-area">
+<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
+<button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
+</div>
+
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 SPEICHERN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
+<button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
 
 <div class="shipping-ctrl">
 <select id="shipSelect"></select>
-<button onclick="addShipping()" style="width: auto; background: #00a8ff; padding: 5px 15px;">+ VERSAND</button>
-<button onclick="manageShipping()" style="width: auto; background: #57606f; padding: 5px 15px;">⚙️ OPTIONEN</button>
+<button onclick="addShipping()" style="width: auto; background: #00a8ff; padding: 8px 15px;">+ VERSAND HINZUFÜGEN</button>
+<button onclick="manageShipping()" style="width: auto; background: #57606f; padding: 8px 15px;">⚙️ OPTIONEN</button>
 </div>
 </div>
 
@@ -111,7 +126,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
 <div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
-<div class="meta-row"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="calcDueDate()"></div>
+<div class="meta-row"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
 <div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 </div>
 </div>
@@ -119,13 +134,13 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname" style="width: 100%; border:none; font-size:13px; font-weight:bold;">
-<input type="text" placeholder="Straße Hausnummer" style="width: 100%; border:none; font-size:13px;">
-<input type="text" placeholder="PLZ Ort" style="width: 100%; border:none; font-size:13px;">
-<input type="text" placeholder="eBay-Name / Handy" style="width: 100%; border:none; font-size:13px;">
+<input type="text" id="rec-name" placeholder="Vorname Nachname">
+<input type="text" id="rec-street" placeholder="Straße Hausnummer">
+<input type="text" id="rec-city" placeholder="PLZ Ort">
+<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
 </div>
 
-<p style="font-size: 12px; margin-top: 20px;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+<p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
@@ -145,24 +160,22 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <select id="statusSelect" class="no-print" onchange="updateStatus()">
 <option value="">Zahlstatus wählen...</option>
-<option value="Betrag in bar erhalten">Bar erhalten</option>
-<option value="Betrag dankend erhalten">Vollständig bezahlt</option>
-<option value="Zahlung offen">Offen</option>
+<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
+<option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
+<option value="Offen">Offen</option>
 </select>
 <div id="statusLabel"></div>
 </div>
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.
-Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).
-Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG). Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen.
 </div>
 <div class="bottom-line">
-<div><strong>D3D Shop</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>Inh. Dominic Strzoda</div>
-<div><strong>Steuer-Details</strong><br>St-Nr: 112/279/00204<br>DE455897359-00001</div>
-<div><strong>Bankverbindung</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -170,41 +183,51 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 <datalist id="prodList"></datalist>
 
 <script>
-let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Makita Akkuhalter"];
-let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [{name: "Versand (DHL Paket)", price: 5.49}];
+let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter"];
+let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
+{name: "Versand (DHL Paket)", price: 5.49},
+{name: "Versand (Großbrief)", price: 2.25}
+];
 
 function init() {
-const today = new Date();
-document.getElementById('date').value = today.toLocaleDateString('de-DE');
-calcDueDate();
-updateShippingList();
+document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
+updateDueDate();
 updateDatalist();
-addItem(true);
+updateShippingList();
+addItem();
 }
 
-function calcDueDate() {
-const dateParts = document.getElementById('date').value.split('.');
-if(dateParts.length === 3) {
-const d = new Date(dateParts[2], dateParts[1]-1, dateParts[0]);
+function importAddress() {
+const raw = document.getElementById('adrImport').value;
+const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+if(lines.length >= 3) {
+document.getElementById('rec-name').value = lines[0];
+document.getElementById('rec-street').value = lines[1];
+document.getElementById('rec-city').value = lines[2];
+if(lines[3]) document.getElementById('rec-tel').value = lines[3];
+}
+}
+
+function updateDueDate() {
 const days = parseInt(document.getElementById('dueDays').value) || 0;
+const d = new Date();
 d.setDate(d.getDate() + days);
 document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
 }
-}
 
-function addItem(isAutoFill = false, name = "", price = "") {
+function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
 const row = body.insertRow();
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" value="${name}" placeholder="Artikel..."></td>
-<td><input type="number" class="table-input" value="${isAutoFill ? 1 : ''}" oninput="calc()"></td>
-<td><input class="table-input" value="${isAutoFill ? 'Stück' : ''}"></td>
+<td><input class="table-input prod-name" list="prodList" value="${name}"></td>
+<td><input type="number" class="table-input" value="${name ? 1 : 1}" oninput="calc()"></td>
+<td><input class="table-input" value="Stück"></td>
 <td><input type="number" class="table-input" value="${price}" step="0.01" oninput="calc()"></td>
 <td style="font-weight:bold"><span class="row-total"></span>
-<div class="btn-wrap no-print">
-<button class="row-btn btn-check" title="Personalisierung" onclick="markPers(this)">✓</button>
-<button class="row-btn btn-del" onclick="this.closest('tr').remove(); calc();">✕</button>
+<div class="row-btns no-print">
+<button class="btn-action btn-perso" title="Personalisierung" onclick="markPers(this)">✓</button>
+<button class="btn-action btn-remove" title="Löschen" onclick="this.closest('tr').remove(); calc();">✕</button>
 </div>
 </td>
 `;
@@ -221,15 +244,15 @@ input.value += " (Personalisierte Anfertigung)";
 function addShipping() {
 const sel = document.getElementById('shipSelect');
 const opt = shippingOptions[sel.selectedIndex];
-if(opt) addItem(true, opt.name, opt.price);
+if(opt) addItem(opt.name, opt.price);
 }
 
 function manageShipping() {
-let raw = prompt("Versandarten (Name:Preis, mit Komma trennen):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
+let raw = prompt("Versandarten (Name:Preis, Name:Preis):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
 if(raw) {
-shippingOptions = raw.split(",").map(p => {
-let [n, pr] = p.split(":");
-return {name: n.trim(), price: pr.trim()};
+shippingOptions = raw.split(",").map(part => {
+let [n, p] = part.split(":");
+return {name: n.trim(), price: parseFloat(p.trim()) || 0};
 });
 localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
 updateShippingList();
@@ -237,7 +260,7 @@ updateShippingList();
 }
 
 function updateShippingList() {
-document.getElementById('shipSelect').innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price} €)</option>`).join('');
+document.getElementById('shipSelect').innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
 }
 
 function calc() {
@@ -254,19 +277,21 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
+function saveAndPrint() { window.print(); }
+function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
+
 function toggleType() {
 const type = document.getElementById('docType');
-type.innerText = type.innerText === "Rechnung" ? "Angebot" : "Rechnung";
+const intro = document.getElementById('introText');
+if(type.innerText === "RECHNUNG") {
+type.innerText = "ANGEBOT";
+intro.innerText = "Gerne unterbreiten wir Ihnen folgendes Angebot:";
+document.getElementById('typeBtn').innerText = "ZU RECHNUNG";
+} else {
+type.innerText = "RECHNUNG";
+intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
+document.getElementById('typeBtn').innerText = "ZU ANGEBOT";
 }
-
-function updateStatus() {
-document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value;
-}
-
-function saveAndPrint() { window.print(); }
-
-function updateDatalist() {
-document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
 }
 
 function saveProduct() {
@@ -274,7 +299,20 @@ const names = document.querySelectorAll('.prod-name');
 names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
 localStorage.setItem('d3d_prods', JSON.stringify(products));
 updateDatalist();
-alert("Gespeichert!");
+alert("Produkte gespeichert!");
+}
+
+function manageProducts() {
+let toDelete = prompt("Produkt exakt tippen zum Löschen:\n" + products.join(", "));
+if(toDelete) {
+products = products.filter(p => p !== toDelete);
+localStorage.setItem('d3d_prods', JSON.stringify(products));
+updateDatalist();
+}
+}
+
+function updateDatalist() {
+document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
 }
 
 init();
