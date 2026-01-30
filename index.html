@@ -16,36 +16,30 @@
 * { box-sizing: border-box; }
 body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--ui-bg); color: var(--text-main); margin: 0; padding: 10px; }
 
-/* Dokumenten-Layout */
 .container {
 max-width: 900px; margin: auto; background: var(--doc-white); color: black;
 padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 position: relative;
+transition: padding 0.2s;
 }
 
-/* Toolbar - Symmetrisch 3x2 */
+/* Toolbar */
 .no-print {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 10px;
-max-width: 900px;
-margin: 0 auto 15px auto;
-background: var(--ui-card);
-padding: 15px;
-border-radius: 10px;
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
+padding: 15px; border-radius: 10px;
 }
 .no-print button {
-width: 100%;
-padding: 12px;
-border-radius: 6px;
-border: none;
-cursor: pointer;
-font-weight: bold;
-color: white;
-font-size: 13px;
-transition: 0.2s;
+width: 100%; padding: 10px; border-radius: 6px; border: none;
+cursor: pointer; font-weight: bold; color: white; font-size: 12px; transition: 0.2s;
 }
+
+.smart-paste-area {
+grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05);
+padding: 10px; border-radius: 6px; margin-top: 5px; align-items: center;
+}
+.smart-paste-area textarea { flex: 1; height: 40px; border-radius: 4px; border: none; padding: 5px; font-size: 11px; background: #2c3135; color: white; resize: none; }
 
 /* Header */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
@@ -53,19 +47,17 @@ transition: 0.2s;
 .addr-left h2 { margin: 0 0 3px 0; font-size: 22px; letter-spacing: 2px; }
 .title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
 
-/* Logo & Meta Box */
 .logo-column { display: flex; flex-direction: column; align-items: center; }
-.logo-img { font-size: 42px; font-weight: bold; letter-spacing: -2px; margin-bottom: 5px; text-align: center; width: 100%; }
-.logo-img span { transform: scaleX(-1); display: inline-block; }
+.logo-placeholder { cursor: pointer; max-width: 200px; max-height: 100px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
+.logo-img-upload { max-width: 100%; max-height: 80px; object-fit: contain; }
+
 .meta-box { background: #f0f0f0; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 120px; font-weight: bold; color: black; font-size: 11px; }
-.small-note { font-size: 10px; text-align: center; margin-top: 6px; font-style: italic; color: #555; white-space: nowrap; width: 100%; }
 
 /* Empfänger */
 .recipient { margin: 5px 0 15px 0; width: 350px; }
-.recipient strong { text-decoration: underline; display: block; margin-bottom: 5px; font-size: 13px; }
-.recipient input { display: block; width: 100%; border: none; border-bottom: 1px solid #eee; padding: 2px 0; font-size: 13px; margin-bottom: 1px; }
+.recipient input { display: block; width: 100%; border: none; padding: 3px 0; font-size: 13px; margin-bottom: 1px; color: black; }
 
 /* Tabelle */
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
@@ -73,47 +65,55 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
 
-/* Lösch-Button Zeile (Weißes X in rotem Kreis) */
-.btn-del-row {
-position: absolute; right: -32px; top: 50%; transform: translateY(-50%);
-background: #ff4757; color: white; border: none; border-radius: 50%;
-width: 22px; height: 22px; cursor: pointer; display: flex;
-align-items: center; justify-content: center; font-size: 12px; font-weight: bold;
-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+/* Interne Notizen (nur Screen) */
+.internal-note { font-size: 9px; color: #888; border: none; background: #f9f9f9; width: 100%; margin-top: 2px; border-top: 1px dashed #ddd; }
 
-/* Status & Summe */
-.summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
-.total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; display: inline-block; }
-#statusSelect { margin-top: 5px; padding: 4px; background: #222; color: white; border: 1px solid #444; border-radius: 4px; font-size: 11px; }
+/* Controls rechts */
+.row-controls { position: absolute; right: -55px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
+.btn-row { width: 20px; height: 20px; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; }
+.btn-del { background: #ff4757; }
+.btn-check { background: #2ed573; }
+
+/* Kompakt Modus */
+.compact .container { padding: 15px 30px; min-height: auto; }
+.compact table { margin-bottom: 10px; }
+.compact .header-main { margin-bottom: 5px; }
 
 /* Footer */
-.footer-wrap { margin-top: auto; padding-bottom: 10px; }
-.legal { font-size: 10.5px; line-height: 1.4; color: #333; margin-bottom: 10px; }
+.footer-wrap { margin-top: auto; padding-top: 20px; }
+.legal { font-size: 10.5px; line-height: 1.3; color: #333; margin-bottom: 10px; }
 .bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 9px; }
 
 @media print {
-@page { size: A4; margin: 0; }
-body { background: white; padding: 1.5cm; }
-.container { box-shadow: none; height: 26.7cm; width: 100%; padding: 0; border: none; }
-.no-print, .btn-del-row { display: none !important; }
-.footer-wrap { position: absolute; bottom: 0; width: 100%; }
-.table-input::placeholder { color: transparent !important; }
-.tel-input:placeholder-shown { display: none !important; }
-.meta-box { -webkit-print-color-adjust: exact; background-color: #f0f0f0 !important; }
-#statusSelect { display: none !important; }
+@page { size: A4; margin: 1cm; }
+body { background: white; padding: 0; }
+.no-print, .row-controls, .internal-note, #fileInput, #statusSelect { display: none !important; }
+.container { box-shadow: none; border: none; width: 100%; display: flex; min-height: 270mm; }
+.footer-wrap { position: relative; page-break-inside: avoid; }
 }
 </style>
 </head>
 <body>
 
+<input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="loadLogo(event)">
+
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
-<button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
-<button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PROD. SICHERN</button>
+<button onclick="document.body.classList.toggle('compact')" style="background: #34495e;">📏 KOMPAKT-MODUS</button>
+<button onclick="manageShipping()" style="background: #57606f;">⚙️ VERSAND-OPTS</button>
+
+<div class="smart-paste-area">
+<textarea id="adrPaste" placeholder="eBay Adresse hier reinkopieren..."></textarea>
+<button onclick="parseAddress()" style="width: auto; background: #00a8ff;">IMPORT</button>
+</div>
+
+<div class="shipping-ctrl" style="grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px;">
+<select id="shipSelect" style="flex:1; background:#2c3135; color:white; border:none; padding:5px;"></select>
+<button onclick="addShipping()" style="width: auto; background: #2980b9;">+ VERSAND</button>
+</div>
 </div>
 
 <div class="container" id="invoiceWrap">
@@ -124,38 +124,39 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </div>
 <div class="title-center" id="docType">Rechnung</div>
 <div class="logo-column">
-<div class="logo-img"><span>D</span>3D</div>
+<div class="logo-placeholder" onclick="document.getElementById('fileInput').click()">
+<div id="logoContainer"><div style="font-size:30px; font-weight:bold;">D3D</div></div>
+</div>
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
 <div id="invMeta">
 <div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
-<div class="meta-row"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="calcDate()"></div>
+<div class="meta-row"><span>Zahlungsziel:</span><input type="number" id="dueDays" value="14" oninput="calcDate()"></div>
 <div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 </div>
 </div>
-<div class="small-note" id="invNote">(Rechnungsnummer bei Zahlung bitte angeben)</div>
 </div>
 </div>
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
-<input type="text" placeholder="Straße Hausnummer">
-<input type="text" placeholder="PLZ Ort">
-<input type="text" class="tel-input" id="telField" placeholder="Handynummer (optional)">
+<input type="text" id="rec-name" placeholder="Name">
+<input type="text" id="rec-street" placeholder="Straße">
+<input type="text" id="rec-city" placeholder="PLZ Ort">
+<input type="text" id="rec-tel" placeholder="Handynummer (optional)">
 </div>
 
-<p style="font-size: 12px; margin: 0 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+<p style="font-size: 11px;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
 <tr>
 <th style="width:5%">Pos.</th>
-<th style="width:45%">Bezeichnung</th>
-<th style="width:10%">Anzahl</th>
+<th style="width:50%">Bezeichnung / Interne Notiz</th>
+<th style="width:10%">Anz.</th>
 <th style="width:10%">Einheit</th>
-<th style="width:15%">Preis (€)</th>
-<th style="width:15%">Gesamt</th>
+<th style="width:12%">Preis (€)</th>
+<th style="width:13%">Gesamt</th>
 </tr>
 </thead>
 <tbody id="itemsBody"></tbody>
@@ -163,15 +164,13 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="summary-area">
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
-<div id="statusArea" class="no-print">
-<select id="statusSelect" onchange="updateStatus()">
-<option value="">Zahlstatus wählen...</option>
-<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
-<option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
+<select id="statusSelect" class="no-print" onchange="updateStatus()">
+<option value="">Zahlstatus...</option>
+<option value="Betrag in bar erhalten">Bar erhalten</option>
+<option value="Betrag dankend erhalten">Dankend erhalten</option>
 <option value="Offen">Offen</option>
 </select>
-</div>
-<div id="statusLabel" style="font-weight: bold; margin-top: 5px; font-size: 14px; color: #00a8ff;"></div>
+<div id="statusLabel"></div>
 </div>
 
 <div class="footer-wrap">
@@ -181,10 +180,10 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontaktinformationen</strong><br>E-Mail: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuerinformationen</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bankinformationen</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>Dominic Strzoda</div>
+<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>DE455897359-00001</div>
+<div><strong>Bank</strong><br>DE65 1001 1001 2856 6428 24<br>NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -192,59 +191,67 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 <datalist id="prodList"></datalist>
 
 <script>
-let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter für Makita"];
+let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter"];
+let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [{name: "Versand (DHL Paket)", price: 5.49}];
 let isInvoice = true;
 
 function init() {
 document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
 const lastNum = localStorage.getItem('d3d_last_inv');
 if(lastNum) document.getElementById('invNum').value = incrementInvNum(lastNum);
+const savedLogo = localStorage.getItem('d3d_logo');
+if(savedLogo) document.getElementById('logoContainer').innerHTML = `<img src="${savedLogo}" class="logo-img-upload">`;
 updateDatalist();
+updateShippingList();
 calcDate();
-for(let i=0; i<3; i++) addItem();
+addItem();
 }
 
-function incrementInvNum(oldNum) {
-return oldNum.replace(/(\d+)(?!.*\d)/, (match) => {
-let next = parseInt(match) + 1;
-return next.toString().padStart(match.length, '0');
-});
+function parseAddress() {
+const raw = document.getElementById('adrPaste').value;
+const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== "");
+if(lines.length >= 3) {
+document.getElementById('rec-name').value = lines[0];
+document.getElementById('rec-street').value = lines[1];
+document.getElementById('rec-city').value = lines[2];
+if(lines[3]) document.getElementById('rec-tel').value = lines[3];
+}
 }
 
-function saveAndPrint() {
-// Automatischer Dateiname: Typ_Nummer_Name
-const type = isInvoice ? "Rechnung" : "Angebot";
-const nr = document.getElementById('invNum').value;
-const kunde = document.getElementById('rec-name').value.replace(/\s+/g, '_') || "Kunde";
-const originalTitle = document.title;
-
-// Setzt den Seitentitel vorübergehend als Dateiname
-document.title = `${type}_${nr}_${kunde}`;
-
-localStorage.setItem('d3d_last_inv', nr);
-window.print();
-
-// Titel zurücksetzen nach dem Drucken
-setTimeout(() => { document.title = originalTitle; }, 1000);
-}
-
-function updateDatalist() {
-document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
-}
-
-function addItem() {
+function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
 const row = body.insertRow();
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" placeholder="Bezeichnung..."></td>
-<td><input type="number" class="table-input" value="" placeholder="1" oninput="calc()"></td>
-<td><input class="table-input" value="" placeholder="Stück"></td>
-<td><input type="number" class="table-input" value="" placeholder="0.00" step="0.01" oninput="calc()"></td>
-<td style="font-weight:bold"><span class="row-total"></span>
-<button class="no-print btn-del-row" onclick="this.parentElement.parentElement.remove(); calc();">✕</button>
+<td>
+<input class="table-input prod-name" list="prodList" placeholder="Bezeichnung..." value="${name}">
+<input class="internal-note" placeholder="Interne Notiz (Material, Zeit...) - wird nicht gedruckt">
+</td>
+<td><input type="number" class="table-input" value="${name ? 1 : ''}" placeholder="1" oninput="calc()"></td>
+<td><input class="table-input" value="${name ? 'Stück' : ''}" placeholder="Stück"></td>
+<td><input type="number" class="table-input" value="${price}" placeholder="0.00" step="0.01" oninput="calc()"></td>
+<td style="font-weight:bold">
+<span class="row-total"></span>
+<div class="row-controls no-print">
+<button class="btn-row btn-check" title="Als personalisiert markieren" onclick="markPersonalized(this)">✓</button>
+<button class="btn-row btn-del" title="Löschen" onclick="this.closest('tr').remove(); calc();">✕</button>
+</div>
 </td>
 `;
+calc();
+}
+
+function markPersonalized(btn) {
+const input = btn.closest('tr').querySelector('.prod-name');
+if(!input.value.includes('(Personalisierte Anfertigung)')) {
+input.value += " (Personalisierte Anfertigung)";
+}
+}
+
+function addShipping() {
+const sel = document.getElementById('shipSelect');
+const opt = shippingOptions[sel.selectedIndex];
+if(opt) addItem(opt.name, opt.price);
 }
 
 function calc() {
@@ -261,54 +268,33 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function calcDate() {
-const days = parseInt(document.getElementById('dueDays').value) || 0;
-const d = new Date();
-d.setDate(d.getDate() + days);
-document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
+function incrementInvNum(oldNum) {
+return oldNum.replace(/(\d+)(?!.*\d)/, (m) => (parseInt(m) + 1).toString().padStart(m.length, '0'));
 }
 
-function saveProduct() {
-const names = document.querySelectorAll('.prod-name');
-names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist();
-alert("Produkte gespeichert!");
+function saveAndPrint() {
+localStorage.setItem('d3d_last_inv', document.getElementById('invNum').value);
+window.print();
 }
 
-function manageProducts() {
-let toDelete = prompt("Welches Produkt möchtest du löschen?\nGespeichert:\n" + products.join(", "));
-if(toDelete) {
-products = products.filter(p => p.toLowerCase() !== toDelete.toLowerCase());
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist();
-}
-}
-
-function sendMail() {
-const name = document.getElementById('rec-name').value || "Kunde";
-const nr = document.getElementById('invNum').value;
-const type = isInvoice ? "Rechnung" : "Angebot";
-const subject = encodeURIComponent(`${type} ${nr} - D3D`);
-const body = encodeURIComponent(`Hallo ${name},\nanbei erhalten Sie das ${type} ${nr}.\n\nBeste Grüße,\nD3D`);
-window.location.href = `mailto:?subject=${subject}&body=${body}`;
+function updateShippingList() {
+const sel = document.getElementById('shipSelect');
+sel.innerHTML = shippingOptions.map((o, i) => `<option value="${i}">${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
 }
 
 function toggleType() {
 isInvoice = !isInvoice;
 document.getElementById('docType').innerText = isInvoice ? "Rechnung" : "Angebot";
 document.getElementById('typeBtn').innerText = isInvoice ? "ZU ANGEBOT" : "ZU RECHNUNG";
-document.getElementById('statusArea').style.display = isInvoice ? "block" : "none";
-document.getElementById('statusLabel').style.display = isInvoice ? "block" : "none";
-document.getElementById('invMeta').style.display = isInvoice ? "block" : "none";
-document.getElementById('invNote').style.display = isInvoice ? "block" : "none";
-document.getElementById('introText').innerText = isInvoice ? "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:" : "Gerne unterbreiten wir Ihnen folgendes Angebot:";
-if(!isInvoice) document.getElementById('statusLabel').innerText = "";
 }
 
-function updateStatus() {
-if(isInvoice) document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value;
+function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
+function loadLogo(e) {
+const r = new FileReader();
+r.onload = () => { localStorage.setItem('d3d_logo', r.result); document.getElementById('logoContainer').innerHTML = `<img src="${r.result}" class="logo-img-upload">`; };
+r.readAsDataURL(e.target.files[0]);
 }
+function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
 
 init();
 </script>
