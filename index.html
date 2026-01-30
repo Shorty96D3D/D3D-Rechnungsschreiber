@@ -36,15 +36,18 @@ cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0
 .import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
 .import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
 
-/* Neuer Versand Manager Style */
 .shipping-manager {
 grid-column: span 3; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px;
 display: flex; flex-direction: column; gap: 8px;
 }
 .ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
 .ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
-.ship-btns { display: flex; gap: 5px; }
-.btn-s { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.ship-btns { display: flex; gap: 8px; }
+.btn-s {
+width: 36px; height: 36px; border-radius: 6px; border: none; cursor: pointer;
+color: white; display: flex; align-items: center; justify-content: center;
+font-size: 20px; font-weight: bold; line-height: 1;
+}
 
 /* Header */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
@@ -59,16 +62,21 @@ display: flex; flex-direction: column; gap: 8px;
 
 /* Empfänger */
 .recipient { margin: 5px 0 15px 0; width: 350px; }
-.recipient input { display: block; width: 100%; border: none; padding: 3px 0; font-size: 13px; color: black; background: transparent; }
+.recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
 
 /* Tabelle */
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
 td { border: 1px solid #000; padding: 4px; position: relative; }
-.table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
+.table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-.row-btns { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
-.btn-action { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; }
+/* Zeilen Buttons - Fix ohne schwarze Ränder */
+.row-btns { position: absolute; right: -65px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
+.btn-action {
+width: 26px; height: 26px; border-radius: 6px; border: none !important;
+cursor: pointer; display: flex; align-items: center; justify-content: center;
+color: white; font-weight: bold; font-size: 16px; box-shadow: none !important;
+}
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
@@ -84,8 +92,10 @@ td { border: 1px solid #000; padding: 4px; position: relative; }
 @page { size: A4; margin: 0; }
 body { background: white; padding: 0; }
 .no-print, .row-btns { display: none !important; }
-.container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; }
+.container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; border: none; }
 .footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
+input::placeholder { color: transparent !important; opacity: 0 !important; }
+input { border: none !important; }
 }
 </style>
 </head>
@@ -104,8 +114,7 @@ body { background: white; padding: 0; }
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
-<div class="shipping-manager" id="shipManager">
-</div>
+<div class="shipping-manager" id="shipManager"></div>
 </div>
 
 <div class="container" id="invoiceWrap">
@@ -131,6 +140,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <input type="text" id="rec-name" placeholder="Vorname Nachname">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
+<input type="text" id="rec-country" placeholder="Land">
 <input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
 </div>
 
@@ -205,8 +215,8 @@ row.className = 'ship-row';
 row.innerHTML = `
 <div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
 <div class="ship-btns">
-<button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen">🛒</button>
-<button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})" title="Bearbeiten">⚙️</button>
+<button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen">+</button>
+<button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})" title="Bearbeiten">⚙</button>
 <button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})" title="Löschen">✕</button>
 </div>
 `;
@@ -226,8 +236,8 @@ container.appendChild(addRow);
 }
 
 function addNewShipping() {
-let name = prompt("Name der neuen Versandart (z.B. Hermes Paket):");
-let price = prompt("Preis in € (z.B. 4.95):");
+let name = prompt("Name der neuen Versandart:");
+let price = prompt("Preis in €:");
 if(name && price) {
 shippingOptions.push({name: name, price: parseFloat(price.replace(',','.')) || 0});
 localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
@@ -246,7 +256,7 @@ renderShippingManager();
 }
 
 function deleteShipping(index) {
-if(confirm("Versandart wirklich löschen?")) {
+if(confirm("Versandart löschen?")) {
 shippingOptions.splice(index, 1);
 localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
 renderShippingManager();
