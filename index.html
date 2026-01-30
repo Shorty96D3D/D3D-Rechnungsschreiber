@@ -59,6 +59,7 @@ font-size: 20px; font-weight: bold; line-height: 1;
 .meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
+.meta-hint { font-size: 9px; color: #555; text-align: center; display: block; margin-top: 5px; font-style: italic; }
 
 /* Empfänger */
 .recipient { margin: 5px 0 15px 0; width: 350px; }
@@ -131,6 +132,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
 <div class="meta-row"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
 <div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
+<span class="meta-hint">(Rechnungsnummer bei Zahlung bitte angeben)</span>
 </div>
 </div>
 </div>
@@ -349,7 +351,19 @@ if(lines.length >= 3) {
 document.getElementById('rec-name').value = lines[0];
 document.getElementById('rec-street').value = lines[1];
 document.getElementById('rec-city').value = lines[2];
-if(lines[3]) document.getElementById('rec-tel').value = lines[3];
+
+// Erweiterte Logik: Wenn mehr Zeilen da sind, Land und Telefon setzen
+if(lines.length === 4) {
+// Fall 1: PLZ/Ort, dann Tel
+document.getElementById('rec-country').value = "Deutschland";
+document.getElementById('rec-tel').value = lines[3];
+} else if(lines.length >= 5) {
+// Fall 2: PLZ/Ort, Land, Tel
+document.getElementById('rec-country').value = lines[3];
+document.getElementById('rec-tel').value = lines[4];
+} else {
+document.getElementById('rec-country').value = "Deutschland";
+}
 }
 }
 
