@@ -22,6 +22,7 @@ padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
 box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
+/* Toolbar */
 .no-print {
 display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
@@ -42,16 +43,13 @@ display: flex; flex-direction: column; gap: 8px;
 .ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
 .ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
 .ship-btns { display: flex; gap: 8px; }
-
-/* Extrem vergrößerte Symbole im Versand-Manager */
 .btn-s {
-width: 42px; height: 42px; border-radius: 6px; border: none; cursor: pointer;
+width: 36px; height: 36px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-font-size: 28px; font-weight: 900; line-height: 1; transition: 0.1s;
+font-size: 20px; font-weight: bold; line-height: 1;
 }
-.btn-s span { transform: scale(1.3); display: inline-block; }
-.btn-s:active { transform: scale(0.9); }
 
+/* Header */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
 .title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
@@ -62,24 +60,23 @@ font-size: 28px; font-weight: 900; line-height: 1; transition: 0.1s;
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 
+/* Empfänger */
 .recipient { margin: 5px 0 15px 0; width: 350px; }
 .recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
 
+/* Tabelle */
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Zeilen Buttons - Absolut clean ohne Hintergründe */
-.row-btns { position: absolute; right: -75px; top: 50%; transform: translateY(-50%); display: flex; gap: 10px; border: none !important; background: none !important; }
+/* Zeilen Buttons - Fix ohne schwarze Ränder */
+.row-btns { position: absolute; right: -65px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
 .btn-action {
-width: 28px; height: 28px; border-radius: 50%; border: none !important;
+width: 26px; height: 26px; border-radius: 6px; border: none !important;
 cursor: pointer; display: flex; align-items: center; justify-content: center;
-color: white; font-weight: bold; font-size: 18px; background: none !important;
-box-shadow: none !important;
+color: white; font-weight: bold; font-size: 16px; box-shadow: none !important;
 }
-.btn-action.check { color: #2ecc71 !important; } /* Nur das Icon ist grün */
-.btn-action.del { color: #ff4757 !important; } /* Nur das Icon ist rot */
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
@@ -98,6 +95,7 @@ body { background: white; padding: 0; }
 .container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; border: none; }
 .footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
 input::placeholder { color: transparent !important; opacity: 0 !important; }
+input { border: none !important; }
 }
 </style>
 </head>
@@ -217,9 +215,9 @@ row.className = 'ship-row';
 row.innerHTML = `
 <div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
 <div class="ship-btns">
-<button class="btn-s" style="background:#2ecc71" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen"><span>+</span></button>
-<button class="btn-s" style="background:#00a8ff" onclick="editShipping(${index})" title="Bearbeiten"><span>⚙</span></button>
-<button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})" title="Löschen"><span>✕</span></button>
+<button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen">+</button>
+<button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})" title="Bearbeiten">⚙</button>
+<button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})" title="Löschen">✕</button>
 </div>
 `;
 container.appendChild(row);
@@ -231,44 +229,10 @@ addRow.style.background = 'rgba(46, 204, 113, 0.1)';
 addRow.innerHTML = `
 <div class="ship-info" style="color:#2ecc71">Neue Versandart erstellen...</div>
 <div class="ship-btns">
-<button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()"><span>+</span></button>
+<button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button>
 </div>
 `;
 container.appendChild(addRow);
-}
-
-function importAddress() {
-const raw = document.getElementById('adrImport').value;
-const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-document.getElementById('rec-name').value = "";
-document.getElementById('rec-street').value = "";
-document.getElementById('rec-city').value = "";
-document.getElementById('rec-country').value = "";
-document.getElementById('rec-tel').value = "";
-
-if(lines.length >= 1) document.getElementById('rec-name').value = lines[0];
-if(lines.length >= 2) document.getElementById('rec-street').value = lines[1];
-
-if(lines.length >= 3) {
-const countries = ["deutschland", "österreich", "austria", "tschechien", "czech", "schweiz", "switzerland"];
-let foundCountry = false;
-
-for (let i = 2; i < lines.length; i++) {
-let lineLower = lines[i].toLowerCase();
-if (countries.some(c => lineLower.includes(c))) {
-document.getElementById('rec-country').value = lines[i];
-foundCountry = true;
-} else if (!document.getElementById('rec-city').value) {
-document.getElementById('rec-city').value = lines[i];
-} else {
-document.getElementById('rec-tel').value = lines[i];
-}
-}
-if(!foundCountry && !document.getElementById('rec-country').value) {
-document.getElementById('rec-country').value = "Deutschland";
-}
-}
 }
 
 function addNewShipping() {
@@ -315,8 +279,8 @@ row.innerHTML = `
 <td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
 <td style="font-weight:bold"><span class="row-total"></span>
 <div class="row-btns no-print">
-<button class="btn-action check" onclick="markPers(this)">✓</button>
-<button class="btn-action del" onclick="this.closest('tr').remove(); calc();">✕</button>
+<button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
+<button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
 </div>
 </td>
 `;
@@ -375,6 +339,17 @@ type.innerText = "RECHNUNG";
 intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
 btn.innerText = "ZU ANGEBOT";
 status.style.display = "block";
+}
+}
+
+function importAddress() {
+const raw = document.getElementById('adrImport').value;
+const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+if(lines.length >= 3) {
+document.getElementById('rec-name').value = lines[0];
+document.getElementById('rec-street').value = lines[1];
+document.getElementById('rec-city').value = lines[2];
+if(lines[3]) document.getElementById('rec-tel').value = lines[3];
 }
 }
 
