@@ -43,13 +43,13 @@ display: flex; flex-direction: column; gap: 8px;
 .ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
 .ship-btns { display: flex; gap: 8px; }
 
-/* Extrem vergrößerte Symbole im Versand-Manager */
+/* Versand-Manager: Maximale Symbolgröße */
 .btn-s {
-width: 42px; height: 42px; border-radius: 6px; border: none; cursor: pointer;
+width: 45px; height: 45px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-font-size: 28px; font-weight: 900; line-height: 1; transition: 0.1s;
+transition: 0.1s;
 }
-.btn-s span { transform: scale(1.3); display: inline-block; }
+.btn-s span { font-size: 32px; font-weight: bold; display: block; line-height: 1; }
 .btn-s:active { transform: scale(0.9); }
 
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
@@ -70,16 +70,21 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Zeilen Buttons - Absolut clean ohne Hintergründe */
-.row-btns { position: absolute; right: -75px; top: 50%; transform: translateY(-50%); display: flex; gap: 10px; border: none !important; background: none !important; }
-.btn-action {
-width: 28px; height: 28px; border-radius: 50%; border: none !important;
-cursor: pointer; display: flex; align-items: center; justify-content: center;
-color: white; font-weight: bold; font-size: 18px; background: none !important;
-box-shadow: none !important;
+/* Positions-Buttons: Komplett transparent, kein Rahmen, keine Balken */
+.row-btns {
+position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
+display: flex; gap: 12px; align-items: center;
+background: none !important; border: none !important;
 }
-.btn-action.check { color: #2ecc71 !important; } /* Nur das Icon ist grün */
-.btn-action.del { color: #ff4757 !important; } /* Nur das Icon ist rot */
+.btn-action {
+background: none !important; border: none !important;
+cursor: pointer; padding: 0; margin: 0;
+font-size: 22px; font-weight: bold; line-height: 1;
+transition: 0.1s;
+}
+.btn-action:active { transform: scale(0.8); }
+.btn-action.check { color: #2ecc71 !important; } /* Nur das grüne Icon */
+.btn-action.del { color: #ff4757 !important; } /* Nur das rote X */
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
@@ -104,7 +109,7 @@ input::placeholder { color: transparent !important; opacity: 0 !important; }
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
 <button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
@@ -112,7 +117,7 @@ input::placeholder { color: transparent !important; opacity: 0 !important; }
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
+<textarea id="adrImport" placeholder="--Adresse hier reinkopieren--"></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
@@ -139,11 +144,11 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
+<input type="text" id="rec-name" placeholder="Name">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -182,10 +187,10 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
+<div><strong>Kontaktinformation</strong><br>kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
+<div><strong>Steuerinformation</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Bankverbindung</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -315,8 +320,8 @@ row.innerHTML = `
 <td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
 <td style="font-weight:bold"><span class="row-total"></span>
 <div class="row-btns no-print">
-<button class="btn-action check" onclick="markPers(this)">✓</button>
-<button class="btn-action del" onclick="this.closest('tr').remove(); calc();">✕</button>
+<button class="btn-action check" onclick="markPers(this)" title="Personalisiert">✓</button>
+<button class="btn-action del" onclick="this.closest('tr').remove(); calc();" title="Löschen">✕</button>
 </div>
 </td>
 `;
