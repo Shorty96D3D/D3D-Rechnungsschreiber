@@ -36,22 +36,24 @@ cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0
 .import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
 .import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
 
-.shipping-ctrl {
-grid-column: span 3; display: flex; gap: 10px; align-items: center;
-background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px;
+/* Neuer Versand Manager Style */
+.shipping-manager {
+grid-column: span 3; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px;
+display: flex; flex-direction: column; gap: 8px;
 }
-.shipping-ctrl select { flex: 1; padding: 8px; border-radius: 4px; border: none; background: #2c3135; color: white; }
+.ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
+.ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
+.ship-btns { display: flex; gap: 5px; }
+.btn-s { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 
 /* Header */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
 .title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
-
-.logo-column { display: flex; flex-direction: column; align-items: center; }
 .logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; }
 .logo-text span { transform: scaleX(-1); display: inline-block; }
 
-.meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; -webkit-print-color-adjust: exact; }
+.meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 
@@ -65,19 +67,17 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
 
-.row-btns { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; background: transparent; }
+.row-btns { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
 .btn-action { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; }
-.btn-perso { background: #2ecc71; }
-.btn-remove { background: #ff4757; }
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
 #statusSelect { margin-top: 8px; background: white; color: black; border: 1px solid #ccc; font-size: 11px; padding: 3px; border-radius: 4px; }
-#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; background: white; padding: 2px 5px; }
+#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; }
 
 .footer-wrap { margin-top: auto; }
-.legal { font-size: 10px; line-height: 1.4; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 5px; }
+.legal { font-size: 10px; line-height: 1.6; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
 .bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 9px; }
 
 @media print {
@@ -86,7 +86,6 @@ body { background: white; padding: 0; }
 .no-print, .row-btns { display: none !important; }
 .container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; }
 .footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
-input::placeholder { color: transparent !important; }
 }
 </style>
 </head>
@@ -105,10 +104,7 @@ input::placeholder { color: transparent !important; }
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
-<div class="shipping-ctrl">
-<select id="shipSelect"></select>
-<button onclick="addShipping()" style="width: auto; background: #00a8ff; padding: 8px 15px;">+ VERSAND HINZUFÜGEN</button>
-<button onclick="manageShipping()" style="width: auto; background: #57606f; padding: 8px 15px;">⚙️ OPTIONEN</button>
+<div class="shipping-manager" id="shipManager">
 </div>
 </div>
 
@@ -156,6 +152,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="summary-area">
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
+<div id="statusSection">
 <select id="statusSelect" class="no-print" onchange="updateStatus()">
 <option value="">Zahlstatus wählen...</option>
 <option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
@@ -164,10 +161,13 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </select>
 <div id="statusLabel"></div>
 </div>
+</div>
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG). Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen.
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.<br>
+Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).<br>
+Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
 <div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
@@ -191,8 +191,145 @@ function init() {
 document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
 updateDueDate();
 updateDatalist();
-updateShippingList();
+renderShippingManager();
 for(let i=0; i<3; i++) addItem();
+}
+
+function renderShippingManager() {
+const container = document.getElementById('shipManager');
+container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
+
+shippingOptions.forEach((opt, index) => {
+const row = document.createElement('div');
+row.className = 'ship-row';
+row.innerHTML = `
+<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
+<div class="ship-btns">
+<button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})" title="Zur Rechnung hinzufügen">🛒</button>
+<button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})" title="Bearbeiten">⚙️</button>
+<button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})" title="Löschen">✕</button>
+</div>
+`;
+container.appendChild(row);
+});
+
+const addRow = document.createElement('div');
+addRow.className = 'ship-row';
+addRow.style.background = 'rgba(46, 204, 113, 0.1)';
+addRow.innerHTML = `
+<div class="ship-info" style="color:#2ecc71">Neue Versandart erstellen...</div>
+<div class="ship-btns">
+<button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button>
+</div>
+`;
+container.appendChild(addRow);
+}
+
+function addNewShipping() {
+let name = prompt("Name der neuen Versandart (z.B. Hermes Paket):");
+let price = prompt("Preis in € (z.B. 4.95):");
+if(name && price) {
+shippingOptions.push({name: name, price: parseFloat(price.replace(',','.')) || 0});
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function editShipping(index) {
+let name = prompt("Neuer Name:", shippingOptions[index].name);
+let price = prompt("Neuer Preis:", shippingOptions[index].price);
+if(name && price) {
+shippingOptions[index] = {name: name, price: parseFloat(price.replace(',','.')) || 0};
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function deleteShipping(index) {
+if(confirm("Versandart wirklich löschen?")) {
+shippingOptions.splice(index, 1);
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function addShipping(index) {
+const opt = shippingOptions[index];
+addItem(opt.name, opt.price.toFixed(2));
+}
+
+function addItem(name = "", price = "") {
+const body = document.getElementById('itemsBody');
+const row = body.insertRow();
+row.innerHTML = `
+<td style="text-align:center">${body.rows.length}</td>
+<td><input class="table-input prod-name" list="prodList" value="${name}" oninput="toggleAutoFields(this)"></td>
+<td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
+<td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
+<td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
+<td style="font-weight:bold"><span class="row-total"></span>
+<div class="row-btns no-print">
+<button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
+<button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
+</div>
+</td>
+`;
+if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
+calc();
+}
+
+function toggleAutoFields(input) {
+const row = input.closest('tr');
+const qty = row.querySelector('.qty-field');
+const unit = row.querySelector('.unit-field');
+if(input.value.trim() !== "") {
+qty.style.visibility = "visible";
+unit.style.visibility = "visible";
+if(qty.value === "") qty.value = 1;
+if(unit.value === "") unit.value = "Stück";
+} else {
+qty.style.visibility = "hidden";
+unit.style.visibility = "hidden";
+}
+calc();
+}
+
+function formatPrice(input) {
+let val = parseFloat(input.value.replace(',','.'));
+if (!isNaN(val)) input.value = val.toFixed(2);
+calc();
+}
+
+function calc() {
+let total = 0;
+const rows = document.getElementById('itemsBody').rows;
+for (let i = 0; i < rows.length; i++) {
+rows[i].cells[0].innerText = i + 1;
+const q = rows[i].querySelector('.qty-field').value || 0;
+const p = rows[i].querySelector('.price-field').value || 0;
+const sub = q * p;
+rows[i].querySelector('.row-total').innerText = sub > 0 ? sub.toFixed(2) : "";
+total += parseFloat(sub);
+}
+document.getElementById('grandTotal').innerText = total.toFixed(2);
+}
+
+function toggleType() {
+const type = document.getElementById('docType');
+const intro = document.getElementById('introText');
+const btn = document.getElementById('typeBtn');
+const status = document.getElementById('statusSection');
+if(type.innerText === "RECHNUNG") {
+type.innerText = "ANGEBOT";
+intro.innerText = "Gerne unterbreiten wir Ihnen folgendes Angebot:";
+btn.innerText = "ZU RECHNUNG";
+status.style.display = "none";
+} else {
+type.innerText = "RECHNUNG";
+intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
+btn.innerText = "ZU ANGEBOT";
+status.style.display = "block";
+}
 }
 
 function importAddress() {
@@ -213,53 +350,6 @@ d.setDate(d.getDate() + days);
 document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
 }
 
-function formatPrice(input) {
-let val = parseFloat(input.value);
-if (!isNaN(val)) {
-input.value = val.toFixed(2);
-}
-calc();
-}
-
-function addItem(name = "", price = "") {
-const body = document.getElementById('itemsBody');
-const row = body.insertRow();
-const isNew = name === "";
-row.innerHTML = `
-<td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" value="${name}" oninput="toggleAutoFields(this)"></td>
-<td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
-<td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
-<td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
-<td style="font-weight:bold"><span class="row-total"></span>
-<div class="row-btns no-print">
-<button class="btn-action btn-perso" title="Personalisierung" onclick="markPers(this)">✓</button>
-<button class="btn-action btn-remove" title="Löschen" onclick="this.closest('tr').remove(); calc();">✕</button>
-</div>
-</td>
-`;
-if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
-calc();
-}
-
-function toggleAutoFields(input) {
-const row = input.closest('tr');
-const qty = row.querySelector('.qty-field');
-const unit = row.querySelector('.unit-field');
-if(input.value.trim() !== "") {
-qty.style.visibility = "visible";
-unit.style.visibility = "visible";
-if(qty.value === "") qty.value = 1;
-if(unit.value === "") unit.value = "Stück";
-} else {
-qty.style.visibility = "hidden";
-unit.style.visibility = "hidden";
-qty.value = "";
-unit.value = "";
-}
-calc();
-}
-
 function markPers(btn) {
 const input = btn.closest('tr').querySelector('.prod-name');
 if(!input.value.includes('(Personalisierte Anfertigung)')) {
@@ -268,88 +358,25 @@ toggleAutoFields(input);
 }
 }
 
-function addShipping() {
-const sel = document.getElementById('shipSelect');
-const opt = shippingOptions[sel.selectedIndex];
-if(opt) addItem(opt.name, opt.price.toFixed(2));
+function saveAndPrint() { window.print(); }
+function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
+function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
+function saveProduct() {
+const names = document.querySelectorAll('.prod-name');
+names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
+localStorage.setItem('d3d_prods', JSON.stringify(products));
+updateDatalist(); alert("Produkte gespeichert!");
 }
-
-function manageShipping() {
-let raw = prompt("Versandarten (Format: Name:Preis, Name:Preis):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
-if(raw) {
-shippingOptions = raw.split(",").map(part => {
-let [n, p] = part.split(":");
-return {name: n.trim(), price: parseFloat(p.trim()) || 0};
-});
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-updateShippingList();
+function manageProducts() {
+let toDelete = prompt("Produkt löschen:\n" + products.join(", "));
+if(toDelete) { products = products.filter(p => p !== toDelete); localStorage.setItem('d3d_prods', JSON.stringify(products)); updateDatalist(); }
 }
-}
-
-function updateShippingList() {
-const sel = document.getElementById('shipSelect');
-sel.innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
-}
-
-function calc() {
-let total = 0;
-const rows = document.getElementById('itemsBody').rows;
-for (let i = 0; i < rows.length; i++) {
-rows[i].cells[0].innerText = i + 1;
-const q = rows[i].querySelector('.qty-field').value || 0;
-const p = rows[i].querySelector('.price-field').value || 0;
-const sub = q * p;
-rows[i].querySelector('.row-total').innerText = sub > 0 ? sub.toFixed(2) : "";
-total += parseFloat(sub);
-}
-document.getElementById('grandTotal').innerText = total.toFixed(2);
-}
-
 function sendMail() {
 const kunde = document.getElementById('rec-name').value || "Kunde";
 const nr = document.getElementById('invNum').value;
 const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
 const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie die Rechnung ${nr}.\n\nBeste Grüße,\nDominic Strzoda / D3D`);
 window.location.href = `mailto:?subject=${subject}&body=${body}`;
-}
-
-function saveAndPrint() { window.print(); }
-function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
-
-function toggleType() {
-const type = document.getElementById('docType');
-const intro = document.getElementById('introText');
-const btn = document.getElementById('typeBtn');
-if(type.innerText === "RECHNUNG") {
-type.innerText = "ANGEBOT";
-intro.innerText = "Gerne unterbreiten wir Ihnen folgendes Angebot:";
-btn.innerText = "ZU RECHNUNG";
-} else {
-type.innerText = "RECHNUNG";
-intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
-btn.innerText = "ZU ANGEBOT";
-}
-}
-
-function saveProduct() {
-const names = document.querySelectorAll('.prod-name');
-names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist();
-alert("Produkte gespeichert!");
-}
-
-function manageProducts() {
-let toDelete = prompt("Produkt exakt tippen zum Löschen:\n" + products.join(", "));
-if(toDelete) {
-products = products.filter(p => p !== toDelete);
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist();
-}
-}
-
-function updateDatalist() {
-document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
 }
 
 init();
