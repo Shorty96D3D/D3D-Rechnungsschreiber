@@ -3,268 +3,233 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D3D Rechnungs-Tool PRO</title>
+<title>D3D Rechnungs-Schreiber</title>
 <style>
 :root {
---bg-color: #1a1d21;
---card-bg: #24292e;
---accent-blue: #00a8ff;
---text-color: #ffffff;
---border-color: #3f4448;
+--bg-color: #f8f9fa;
+--text-dark: #333;
+--gray-bg: #e9ecef;
+--accent: #000;
 }
 
 * { box-sizing: border-box; }
-body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+body { font-family: Arial, sans-serif; background: var(--bg-color); color: var(--text-dark); margin: 0; padding: 20px; line-height: 1.4; }
 
 .container {
 max-width: 900px;
 margin: auto;
-background: var(--card-bg);
-padding: 40px;
-border-radius: 12px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+background: white;
+padding: 50px;
+box-shadow: 0 0 15px rgba(0,0,0,0.1);
+min-height: 1100px;
+display: flex;
+flex-direction: column;
 }
 
 /* Toolbar */
-.no-print { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-button {
-padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;
-background: var(--accent-blue); color: white; transition: 0.3s;
-}
-button:hover { opacity: 0.8; }
+.no-print { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; background: #24292e; padding: 15px; border-radius: 8px; }
+button { padding: 10px 15px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; background: #00a8ff; color: white; }
 
-/* Header Layout */
-.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+/* Layout nach Bild 1 */
+.header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 40px; }
 
-.logo-area h1 { font-size: 45px; margin: 0; color: var(--accent-blue); letter-spacing: 5px; line-height: 1; }
-.logo-area p { font-size: 12px; margin: 5px 0 0 0; opacity: 0.8; }
+.addr-left { font-size: 13px; }
+.addr-left h2 { margin: 0; font-size: 24px; letter-spacing: 1px; }
 
-.meta-info-block {
-background: rgba(255,255,255,0.05);
-padding: 15px;
-border-radius: 8px;
-min-width: 250px;
-}
-.meta-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; }
-.meta-row input { background: transparent; border: none; color: white; text-align: right; width: 110px; border-bottom: 1px solid #555; }
+.title-center { text-align: center; font-size: 32px; font-weight: bold; text-decoration: underline; }
 
-.doc-title { font-size: 28px; font-weight: bold; text-transform: uppercase; margin: 20px 0; color: var(--accent-blue); }
+.logo-right { text-align: right; }
+.logo-img { font-size: 40px; font-weight: bold; letter-spacing: -2px; display: block; margin-bottom: 10px; }
+.logo-img span { transform: scaleX(-1); display: inline-block; } /* Umgedrehtes D */
 
-/* Address */
-.address-section { margin: 20px 0 40px 0; }
-.address-section strong { font-size: 16px; color: var(--accent-blue); text-decoration: underline; }
-.address-section input { background: transparent; border: none; border-bottom: 1px solid var(--border-color); color: white; display: block; width: 350px; padding: 8px 0; margin-bottom: 5px; font-size: 15px; }
+.meta-box { background: var(--gray-bg); padding: 10px; border-radius: 2px; width: 280px; margin-left: auto; font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center; }
+.meta-row input { background: transparent; border: none; text-align: right; width: 120px; font-weight: bold; }
+.small-note { font-size: 10px; text-align: right; margin-top: 5px; font-style: italic; }
 
-/* Table Style */
-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-th { border-bottom: 2px solid var(--accent-blue); padding: 12px; text-align: left; font-size: 13px; text-transform: uppercase; }
-td { border-bottom: 1px solid var(--border-color); padding: 12px 10px; }
-input.table-input { background: transparent; border: none; color: white; width: 100%; }
+/* Empfänger & Intro */
+.recipient { margin: 40px 0; width: 300px; }
+.recipient strong { text-decoration: underline; display: block; margin-bottom: 10px; }
+.recipient input { display: block; width: 100%; border: none; border-bottom: 1px solid #ddd; padding: 5px 0; margin-bottom: 2px; }
 
-/* Rechnungsbetrag & Status */
-.total-area { margin-top: 30px; text-align: right; padding-right: 10px; }
-.grand-total { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-.status-text { font-size: 16px; color: var(--accent-blue); font-style: italic; }
+/* Tabelle */
+table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+th { border: 1px solid #000; padding: 8px; background: #f2f2f2; font-size: 14px; }
+td { border: 1px solid #000; padding: 6px; }
+.table-input { width: 100%; border: none; font-family: inherit; font-size: 13px; }
 
-/* Footer */
-.legal-notices { margin-top: 50px; text-align: center; font-size: 12px; line-height: 1.6; }
-.divider { border: 0; border-top: 1px solid var(--border-color); margin: 20px 0; }
+/* Summe & Status */
+.summary-area { text-align: right; margin-top: 20px; padding-right: 10px; }
+.total-box { font-size: 18px; font-weight: bold; display: inline-block; border-bottom: 2px solid #000; padding: 5px; }
 
-.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; font-size: 10px; color: #aaa; }
+/* Footer Texte */
+.footer-text-block { margin-top: auto; padding-top: 40px; font-size: 12px; }
+.legal { margin-bottom: 20px; }
+.bottom-line { border-top: 1px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; font-size: 9px; }
 
 @media print {
-@page { margin: 10mm; }
-body { background: white; color: black; padding: 0; }
-.container { box-shadow: none; width: 100%; padding: 0; background: white; }
+body { padding: 0; background: white; }
+.container { box-shadow: none; padding: 0; width: 100%; }
 .no-print { display: none !important; }
-input, select { color: black !important; border: none !important; }
-.meta-info-block { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
-.meta-row input { color: black !important; }
-th { border-bottom: 2px solid black !important; color: black !important; }
-td { border-bottom: 1px solid #ccc !important; color: black !important; }
-.doc-title, .address-section strong, .grand-total, .status-text { color: black !important; }
-.divider { border-top: 1px solid black !important; }
+input { border: none !important; }
+/* Verhindert Browser-Header/Footer */
+@page { margin: 1.5cm; }
+header, footer, aside, nav, .page-url, .page-title { display: none !important; }
 }
 </style>
 </head>
 <body>
 
 <div class="no-print">
-<button onclick="window.print()">🖨️ Drucken / PDF</button>
-<button onclick="sendEmail()" style="background: #e67e22;">📧 Per E-Mail senden</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ Position</button>
-<button onclick="saveNewProduct()" style="background: #34495e;">💾 Produkt speichern</button>
-<button onclick="toggleDoc()" id="typeBtn" style="background: #9b59b6;">Zu Angebot wechseln</button>
+<button onclick="window.print()">🖨️ PDF / DRUCKEN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ Zeile</button>
+<button onclick="saveProduct()" style="background: #34495e;">💾 Bezeichnung speichern</button>
+<button onclick="toggleType()" id="typeBtn" style="background: #9b59b6;">ZU ANGEBOT</button>
 </div>
 
 <div class="container">
-<header class="header-top">
-<div class="logo-area">
-<h1>D3D</h1>
-<p>Graf-Sempt-Str. 27, 85601 Forstinning<br>Deutschland</p>
+<div class="header-main">
+<div class="addr-left">
+<h2>D3D</h2>
+Graf-Sempt-Str. 27, 85601 Forstinning<br>
+Deutschland
 </div>
-<div class="meta-info-block">
-<div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
-<div id="invoiceFields">
-<div class="meta-row"><span>Rechnungsnr:</span><input type="text" id="invNum" value="2026-001"></div>
-<div class="meta-row"><span>Zahlungsziel:</span><input type="number" id="dueDays" value="14" oninput="calcDates()"></div>
-<div class="meta-row"><span>Fällig am:</span><span id="dueDateText" style="float:right; width:110px; text-align:right;"></span></div>
+<div class="title-center" id="docType">Rechnung</div>
+<div class="logo-right">
+<div class="logo-img"><span>D</span>3D</div>
+<div class="meta-box">
+<div class="meta-row"><span>Rechnungsdatum:</span><input type="text" id="date"></div>
+<div id="invMeta">
+<div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="2026-001"></div>
+<div class="meta-row"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="calcDate()"></div>
+<div class="meta-row"><span>Fälligkeitsdatum:</span><input type="text" id="dueDate" readonly></div>
+</div>
+<div class="small-note" id="invNote">(Rechnungsnummer bei Zahlung bitte angeben)</div>
 </div>
 </div>
-</header>
+</div>
 
-<div class="doc-title" id="docTitle">Rechnung</div>
-
-<div class="address-section">
+<div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="recName" placeholder="Name / Firma">
+<input type="text" placeholder="Vorname Nachname">
 <input type="text" placeholder="Straße Hausnummer">
 <input type="text" placeholder="PLZ Ort">
-<input type="text" placeholder="Handynummer (optional)">
 </div>
 
-<p id="intro" style="font-size: 13px;">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+<p style="font-size: 13px;">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
 <tr>
-<th style="width:5%">Pos</th>
+<th style="width:5%">Pos.</th>
 <th style="width:45%">Bezeichnung</th>
 <th style="width:10%">Anzahl</th>
 <th style="width:10%">Einheit</th>
-<th style="width:15%">Preis (€)</th>
+<th style="width:15%">Preis</th>
 <th style="width:15%">Gesamt</th>
 </tr>
 </thead>
-<tbody id="items"></tbody>
+<tbody id="itemsBody"></tbody>
 </table>
 
-<div class="total-area">
-<div class="no-print" style="margin-bottom: 10px;">
-<select id="statusSelect" onchange="updateStatus()" style="background:#333; color:white; border:none; padding:5px; border-radius:4px;">
+<div class="summary-area">
+<div class="no-print">
+<select id="statusSelect" onchange="updateStatus()">
 <option value="">Status wählen...</option>
 <option value="Bereits bezahlt (eBay)">Bereits bezahlt (eBay)</option>
 <option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
-<option value="Offen">Offen</option>
 </select>
 </div>
-<div class="grand-total">Rechnungsbetrag: <span id="grandTotal">0.00</span> €</div>
-<div id="statusDisplay" class="status-text"></div>
+<div class="total-box">Rechnungsbetrag: <span id="grandTotal">0.00</span> €</div><br>
+<div id="statusLabel" style="font-weight: bold; margin-top: 5px;"></div>
 </div>
 
-<div class="legal-notices">
-<p>Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.</p>
-<p>Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).</p>
-<p><strong>Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).</strong></p>
+<div class="footer-text-block">
+<div class="legal">
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.<br>
+Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).<br>
+Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
+</div>
+<div class="bottom-line">
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85601 Forstinning</div>
+<div><strong>Kontakt</strong><br>E-Mail: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>Steuern</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Bank</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
+</div>
+</div>
 </div>
 
-<hr class="divider">
-
-<footer class="footer-grid">
-<div>
-<strong>D3D</strong><br>
-Graf-Sempt-Str. 27<br>
-85601 Forstinning<br>
-Deutschland
-</div>
-<div>
-<strong>Kontakt</strong><br>
-E-Mail: kontakt.D3D@gmail.com<br>
-Steuer-Nr.: 112/279/00204<br>
-Ust-IdNr.: DE455897359-00001
-</div>
-<div>
-<strong>Bankverbindung</strong><br>
-IBAN: DE65 1001 1001 2856 6428 24<br>
-BIC: NTSBDEB1XXX<br>
-GF: Strzoda Dominic
-</div>
-</footer>
-</div>
-
-<datalist id="tpl"></datalist>
+<datalist id="prodList"></datalist>
 
 <script>
-// Produkte aus LocalStorage laden oder Standard setzen
-let products = JSON.parse(localStorage.getItem('d3d_products')) || ["Akkuhalter für Makita", "Versand, Verpackung & Versand"];
+let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter für Makita"];
 let isInvoice = true;
 
-function updateDatalist() {
-const list = document.getElementById('tpl');
-list.innerHTML = products.map(p => `<option value="${p}">`).join('');
-}
-
-function saveNewProduct() {
-const inputs = document.querySelectorAll('.prod-input');
-inputs.forEach(input => {
-if(input.value && !products.includes(input.value)) {
-products.push(input.value);
-}
-});
-localStorage.setItem('d3d_products', JSON.stringify(products));
-updateDatalist();
-alert("Produkte gespeichert!");
-}
-
+function init() {
 document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
+updateDatalist();
+calcDate();
+addItem();
+}
+
+function updateDatalist() {
+document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
+}
 
 function addItem() {
-const row = document.getElementById('items').insertRow();
-const pos = document.getElementById('items').rows.length;
+const body = document.getElementById('itemsBody');
+const row = body.insertRow();
 row.innerHTML = `
-<td>${pos}</td>
-<td><input class="table-input prod-input" list="tpl" placeholder="Produkt wählen oder tippen..."></td>
+<td>${body.rows.length}</td>
+<td><input class="table-input prod-name" list="prodList" placeholder="Bezeichnung..."></td>
 <td><input type="number" class="table-input" value="1" oninput="calc()"></td>
 <td><input class="table-input" value="Stück"></td>
 <td><input type="number" class="table-input" value="0.00" step="0.01" oninput="calc()"></td>
-<td class="row-total" style="font-weight:bold;">0.00</td>
+<td class="row-total">0.00</td>
 `;
 }
 
 function calc() {
 let total = 0;
-[...document.getElementById('items').rows].forEach(row => {
-const q = row.cells[2].querySelector('input').value;
-const p = row.cells[4].querySelector('input').value;
+[...document.getElementById('itemsBody').rows].forEach(r => {
+const q = r.cells[2].querySelector('input').value;
+const p = r.cells[4].querySelector('input').value;
 const sub = q * p;
-row.cells[5].innerText = sub.toFixed(2);
+r.cells[5].innerText = sub.toFixed(2);
 total += sub;
 });
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function calcDates() {
+function calcDate() {
 const days = parseInt(document.getElementById('dueDays').value) || 0;
 const d = new Date();
 d.setDate(d.getDate() + days);
-document.getElementById('dueDateText').innerText = d.toLocaleDateString('de-DE');
+document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
 }
 
-function toggleDoc() {
+function saveProduct() {
+const names = document.querySelectorAll('.prod-name');
+names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
+localStorage.setItem('d3d_prods', JSON.stringify(products));
+updateDatalist();
+alert("Gespeichert!");
+}
+
+function toggleType() {
 isInvoice = !isInvoice;
-document.getElementById('docTitle').innerText = isInvoice ? "Rechnung" : "Angebot";
-document.getElementById('typeBtn').innerText = isInvoice ? "Zu Angebot wechseln" : "Zu Rechnung wechseln";
-document.getElementById('invoiceFields').style.display = isInvoice ? "block" : "none";
-document.getElementById('intro').innerText = isInvoice ? "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:" : "Gerne unterbreiten wir Ihnen folgendes Angebot:";
+document.getElementById('docType').innerText = isInvoice ? "Rechnung" : "Angebot";
+document.getElementById('typeBtn').innerText = isInvoice ? "ZU ANGEBOT" : "ZU RECHNUNG";
+document.getElementById('invMeta').style.display = isInvoice ? "block" : "none";
+document.getElementById('invNote').style.display = isInvoice ? "block" : "none";
 }
 
 function updateStatus() {
-document.getElementById('statusDisplay').innerText = document.getElementById('statusSelect').value;
+document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value;
 }
 
-function sendEmail() {
-const name = document.getElementById('recName').value;
-const nr = document.getElementById('invNum').value;
-const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
-const body = encodeURIComponent(`Hallo ${name},\n\nanbei erhalten Sie die Rechnung ${nr}.\n\nBeste Grüße,\nD3D`);
-window.location.href = `mailto:kontakt.D3D@gmail.com?subject=${subject}&body=${body}`;
-}
-
-// Init
-addItem();
-calcDates();
-updateDatalist();
+init();
 </script>
 </body>
 </html>
