@@ -29,12 +29,12 @@ max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
 padding: 15px; border-radius: 10px;
 }
 .no-print button {
-width: 100%; padding: 10px; border-radius: 6px; border: none;
-cursor: pointer; font-weight: bold; color: white; font-size: 12px; transition: 0.2s;
+width: 100%; padding: 12px; border-radius: 6px; border: none;
+cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
 
 .import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
-.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; }
+.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
 
 .shipping-ctrl {
 grid-column: span 3; display: flex; gap: 10px; align-items: center;
@@ -65,13 +65,11 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
 
-/* Zeilen Buttons - sauber ausgerichtet */
 .row-btns { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; background: transparent; }
 .btn-action { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; }
 .btn-perso { background: #2ecc71; }
 .btn-remove { background: #ff4757; }
 
-/* Summe & Status */
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
@@ -89,23 +87,23 @@ body { background: white; padding: 0; }
 .container { box-shadow: none; padding: 1.5cm; width: 100%; min-height: 297mm; }
 .footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
 input::placeholder { color: transparent !important; }
-.meta-box { background-color: #f0f0f0 !important; }
 }
 </style>
 </head>
 <body>
 
 <div class="no-print">
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
+<button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
+<button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
+<button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
+
 <div class="import-area">
 <textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
-
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
-<button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
-<button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
 
 <div class="shipping-ctrl">
 <select id="shipSelect"></select>
@@ -194,7 +192,7 @@ document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
 updateDueDate();
 updateDatalist();
 updateShippingList();
-addItem();
+for(let i=0; i<3; i++) addItem();
 }
 
 function importAddress() {
@@ -215,15 +213,24 @@ d.setDate(d.getDate() + days);
 document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
 }
 
+function formatPrice(input) {
+let val = parseFloat(input.value);
+if (!isNaN(val)) {
+input.value = val.toFixed(2);
+}
+calc();
+}
+
 function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
 const row = body.insertRow();
+const isNew = name === "";
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" value="${name}"></td>
-<td><input type="number" class="table-input" value="${name ? 1 : 1}" oninput="calc()"></td>
-<td><input class="table-input" value="Stück"></td>
-<td><input type="number" class="table-input" value="${price}" step="0.01" oninput="calc()"></td>
+<td><input class="table-input prod-name" list="prodList" value="${name}" oninput="toggleAutoFields(this)"></td>
+<td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
+<td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
+<td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
 <td style="font-weight:bold"><span class="row-total"></span>
 <div class="row-btns no-print">
 <button class="btn-action btn-perso" title="Personalisierung" onclick="markPers(this)">✓</button>
@@ -231,6 +238,25 @@ row.innerHTML = `
 </div>
 </td>
 `;
+if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
+calc();
+}
+
+function toggleAutoFields(input) {
+const row = input.closest('tr');
+const qty = row.querySelector('.qty-field');
+const unit = row.querySelector('.unit-field');
+if(input.value.trim() !== "") {
+qty.style.visibility = "visible";
+unit.style.visibility = "visible";
+if(qty.value === "") qty.value = 1;
+if(unit.value === "") unit.value = "Stück";
+} else {
+qty.style.visibility = "hidden";
+unit.style.visibility = "hidden";
+qty.value = "";
+unit.value = "";
+}
 calc();
 }
 
@@ -238,17 +264,18 @@ function markPers(btn) {
 const input = btn.closest('tr').querySelector('.prod-name');
 if(!input.value.includes('(Personalisierte Anfertigung)')) {
 input.value += " (Personalisierte Anfertigung)";
+toggleAutoFields(input);
 }
 }
 
 function addShipping() {
 const sel = document.getElementById('shipSelect');
 const opt = shippingOptions[sel.selectedIndex];
-if(opt) addItem(opt.name, opt.price);
+if(opt) addItem(opt.name, opt.price.toFixed(2));
 }
 
 function manageShipping() {
-let raw = prompt("Versandarten (Name:Preis, Name:Preis):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
+let raw = prompt("Versandarten (Format: Name:Preis, Name:Preis):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
 if(raw) {
 shippingOptions = raw.split(",").map(part => {
 let [n, p] = part.split(":");
@@ -260,7 +287,8 @@ updateShippingList();
 }
 
 function updateShippingList() {
-document.getElementById('shipSelect').innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
+const sel = document.getElementById('shipSelect');
+sel.innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
 }
 
 function calc() {
@@ -268,13 +296,21 @@ let total = 0;
 const rows = document.getElementById('itemsBody').rows;
 for (let i = 0; i < rows.length; i++) {
 rows[i].cells[0].innerText = i + 1;
-const q = rows[i].cells[2].querySelector('input').value || 0;
-const p = rows[i].cells[4].querySelector('input').value || 0;
+const q = rows[i].querySelector('.qty-field').value || 0;
+const p = rows[i].querySelector('.price-field').value || 0;
 const sub = q * p;
 rows[i].querySelector('.row-total').innerText = sub > 0 ? sub.toFixed(2) : "";
 total += parseFloat(sub);
 }
 document.getElementById('grandTotal').innerText = total.toFixed(2);
+}
+
+function sendMail() {
+const kunde = document.getElementById('rec-name').value || "Kunde";
+const nr = document.getElementById('invNum').value;
+const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
+const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie die Rechnung ${nr}.\n\nBeste Grüße,\nDominic Strzoda / D3D`);
+window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
 function saveAndPrint() { window.print(); }
@@ -283,14 +319,15 @@ function updateStatus() { document.getElementById('statusLabel').innerText = doc
 function toggleType() {
 const type = document.getElementById('docType');
 const intro = document.getElementById('introText');
+const btn = document.getElementById('typeBtn');
 if(type.innerText === "RECHNUNG") {
 type.innerText = "ANGEBOT";
 intro.innerText = "Gerne unterbreiten wir Ihnen folgendes Angebot:";
-document.getElementById('typeBtn').innerText = "ZU RECHNUNG";
+btn.innerText = "ZU RECHNUNG";
 } else {
 type.innerText = "RECHNUNG";
 intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
-document.getElementById('typeBtn').innerText = "ZU ANGEBOT";
+btn.innerText = "ZU ANGEBOT";
 }
 }
 
