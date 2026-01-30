@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D3D Rechnungs-Tool</title>
+<style>
+:root { --main-bg: #f4f4f4; --accent: #333; }
+body { font-family: Arial, sans-serif; background: var(--main-bg); margin: 0; padding: 20px; font-size: 14px; }
+.container { max-width: 800px; background: white; margin: auto; padding: 40px; border: 1px solid #ddd; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; }
+
+/* Header Bereich */
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+.logo-section h1 { margin: 0; font-size: 28px; letter-spacing: 2px; }
+.type-selector { font-size: 24px; font-weight: bold; border: none; background: none; cursor: pointer; border-bottom: 2px solid #000; }
+.meta-table { width: 250px; background: #eee; padding: 10px; border-collapse: collapse; }
+.meta-table td { padding: 3px; font-size: 12px; }
+.meta-table input { width: 100%; border: none; background: transparent; }
+
+/* Anschrift */
+.address-box { margin-bottom: 30px; }
+.address-box input, .address-box textarea { display: block; width: 300px; border: none; padding: 2px; margin-bottom: 2px; }
+.address-box input:focus { background: #f0f0f0; }
+
+/* Tabelle */
+table.items { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table.items th { border: 1px solid #000; padding: 8px; background: #f9f9f9; text-align: left; }
+table.items td { border: 1px solid #000; padding: 5px; vertical-align: top; }
+.col-pos { width: 30px; } .col-desc { width: auto; } .col-qty { width: 60px; } .col-unit { width: 80px; } .col-price { width: 90px; } .col-total { width: 90px; }
+
+input, select, textarea { font-family: inherit; font-size: inherit; width: 100%; box-sizing: border-box; }
+.no-border { border: none; }
+
+/* Buttons & Footer */
+.controls { margin-top: 20px; display: flex; gap: 10px; }
+.footer-text { margin-top: 40px; font-size: 11px; color: #555; }
+.signature-area { margin-top: 30px; display: flex; justify-content: space-between; font-weight: bold; }
+
+@media print {
+.no-print { display: none; }
+body { padding: 0; background: white; }
+.container { box-shadow: none; border: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="no-print" style="text-align:center; margin-bottom: 20px;">
+<button onclick="window.print()">Rechnung als PDF speichern</button>
+<button onclick="addItem()">+ Position hinzufügen</button>
+<button onclick="toggleType()">Wechseln zwischen Rechnung / Angebot</button>
+</div>
+
+<div class="container" id="app">
+<div class="header">
+<div class="logo-section">
+<h1 contenteditable="true">D3D</h1>
+<div style="font-size: 12px; margin-top: 5px;">
+Graf-Sempt-Str. 27, 85601 Forstinning<br>
+Deutschland
+</div>
+</div>
+<div>
+<select id="docType" class="type-selector" onchange="updateView()">
+<option value="Rechnung">RECHNUNG</option>
+<option value="Angebot">ANGEBOT</option>
+</select>
+<table class="meta-table" id="metaTable">
+<tr><td>Datum:</td><td><input type="text" id="date"></td></tr>
+<tr class="inv-only"><td>Rechnungsnr.:</td><td><input type="text" id="invNum" value="2026-001"></td></tr>
+<tr class="inv-only"><td>Zahlungsziel:</td><td><input type="number" id="dueDays" value="14" oninput="calcDueDate()"> Tage</td></tr>
+<tr class="inv-only"><td>Fällig am:</td><td><b id="dueDateText"></b></td></tr>
+</table>
+</div>
+</div>
+
+<div class="address-box">
+<strong>Empfänger:</strong>
+<input type="text" placeholder="Name / Firma">
+<input type="text" placeholder="Straße Nr.">
+<input type="text" placeholder="PLZ Ort">
+<input type="text" placeholder="Handynummer (optional)">
+</div>
+
+<p id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+
+<table class="items">
+<thead>
+<tr>
+<th class="col-pos">Pos</th>
+<th class="col-desc">Bezeichnung</th>
+<th class="col-qty">Anzahl</th>
+<th class="col-unit">Einheit</th>
+<th class="col-price">Preis (€)</th>
+<th class="col-total">Gesamt</th>
+</tr>
+</thead>
+<tbody id="itemBody">
+</tbody>
+</table>
+
+<div style="margin-top: 20px; text-align: right;">
+<div id="statusControl" class="no-print" style="margin-bottom: 10px;">
+Status:
+<select id="paymentStatus" onchange="updateTotalLabel()">
+<option value="">(keiner)</option>
+<option value="Bereits bezahlt (eBay)">Bereits bezahlt (eBay)</option>
+<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
+<option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
+</select>
+</div>
+<div style="font-size: 18px; font-weight: bold;">
+Rechnungsbetrag: <span id="grandTotal">0.00</span> €
+</div>
+<div id="statusLabel" style="font-style: italic; color: #444; margin-top: 5px;"></div>
+</div>
+
+<div class="footer-text">
+<p>Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.</p>
+<p>Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).</p>
+<hr>
+<div style="display: flex; justify-content: space-between;">
+<span>E-Mail: kontakt.D3D@gmail.com</span>
+<span>Steuer-Nr.: 112/227/50034</span>
+<span>Bank: DE66 2200 ...</span>
+</div>
+</div>
+</div>
+
+<script>
+// Vorlagen-Speicher (Local Storage fähig)
+const templates = ["Akkuhalter für Makita", "Versand, Verpackung & Versand", "Wandhalterung Universal"];
+const units = ["Stück", "STK", "Meter", "Set"];
+
+// Heute setzen
+document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
+
+function addItem() {
+const tbody = document.getElementById('itemBody');
+const rowCount = tbody.rows.length + 1;
+const tr = document.createElement('tr');
+tr.innerHTML = `
+<td>${rowCount}</td>
+<td>
+<input list="tplList" class="no-border">
+<datalist id="tplList">${templates.map(t => `<option value="${t}">`).join('')}</datalist>
+</td>
+<td><input type="number" value="1" oninput="calculate()" class="no-border"></td>
+<td>
+<input list="unitList" class="no-border" value="Stück">
+<datalist id="unitList">${units.map(u => `<option value="${u}">`).join('')}</datalist>
+</td>
+<td><input type="number" step="0.01" value="0.00" oninput="calculate()" class="no-border"></td>
+<td class="row-total">0.00</td>
+`;
+tbody.appendChild(tr);
+}
+
+function calculate() {
+let total = 0;
+const rows = document.getElementById('itemBody').rows;
+for (let row of rows) {
+const qty = row.cells[2].querySelector('input').value;
+const price = row.cells[4].querySelector('input').value;
+const subtotal = qty * price;
+row.cells[5].innerText = subtotal.toFixed(2);
+total += subtotal;
+}
+document.getElementById('grandTotal').innerText = total.toFixed(2);
+}
+
+function calcDueDate() {
+const days = parseInt(document.getElementById('dueDays').value);
+const date = new Date();
+date.setDate(date.getDate() + days);
+document.getElementById('dueDateText').innerText = date.toLocaleDateString('de-DE');
+}
+
+function updateView() {
+const type = document.getElementById('docType').value;
+const meta = document.querySelectorAll('.inv-only');
+meta.forEach(el => el.style.display = (type === 'Angebot' ? 'none' : 'table-row'));
+document.getElementById('introText').innerText = type === 'Angebot' ?
+'Gerne unterbreiten wir Ihnen folgendes Angebot:' :
+'Wir danken für Ihren Auftrag und berechnen diesen wie folgt:';
+}
+
+function updateTotalLabel() {
+document.getElementById('statusLabel').innerText = document.getElementById('paymentStatus').value;
+}
+
+// Initialisierung
+addItem();
+calcDueDate();
+</script>
+</body>
+</html>
