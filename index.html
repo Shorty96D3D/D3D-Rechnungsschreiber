@@ -30,36 +30,27 @@ max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
 padding: 15px; border-radius: 10px;
 }
 .no-print button {
-width: 100%; padding: 12px; border-radius: 6px; border: none;
-cursor: pointer; font-weight: bold; color: white; font-size: 13px; transition: 0.2s;
+width: 100%; padding: 10px; border-radius: 6px; border: none;
+cursor: pointer; font-weight: bold; color: white; font-size: 12px; transition: 0.2s;
 }
 .shipping-ctrl {
 grid-column: span 3; display: flex; gap: 10px; align-items: center;
-background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-top: 5px;
+background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px;
 }
 .shipping-ctrl select { flex: 1; padding: 8px; border-radius: 4px; border: none; background: #2c3135; color: white; }
 
 /* Header */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
-.addr-left h2 { margin: 0 0 3px 0; font-size: 22px; letter-spacing: 2px; }
 .title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
 
 .logo-column { display: flex; flex-direction: column; align-items: center; }
-.logo-placeholder { cursor: pointer; max-width: 200px; max-height: 100px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
-.logo-img-upload { max-width: 100%; max-height: 80px; object-fit: contain; }
 .logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; }
 .logo-text span { transform: scaleX(-1); display: inline-block; }
 
-.meta-box { background: #f0f0f0; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
+.meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; -webkit-print-color-adjust: exact; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
-.meta-row input { background: transparent; border: none; text-align: right; width: 120px; font-weight: bold; color: black; font-size: 11px; }
-.small-note { font-size: 10px; text-align: center; margin-top: 6px; font-style: italic; color: #555; white-space: nowrap; width: 100%; }
-
-/* Empfänger */
-.recipient { margin: 5px 0 15px 0; width: 350px; }
-.recipient strong { display: block; margin-bottom: 5px; font-size: 13px; }
-.recipient input { display: block; width: 100%; border: none; padding: 3px 0; font-size: 13px; margin-bottom: 1px; color: black; }
+.meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 
 /* Tabelle */
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
@@ -67,53 +58,44 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; }
 
-.btn-del-row {
-position: absolute; right: -28px; top: 50%; transform: translateY(-50%);
-background: #ff4757; color: white; border: none; border-radius: 50%;
-width: 18px; height: 18px; cursor: pointer; display: flex;
-align-items: center; justify-content: center; font-size: 10px; font-weight: bold;
-}
+/* Zeilen Buttons */
+.btn-wrap { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
+.row-btn { width: 22px; height: 22px; border: none; border-radius: 50%; cursor: pointer; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.btn-check { background: #2ecc71; }
+.btn-del { background: #ff4757; }
 
-/* Summe & Status */
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
-.total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; display: inline-block; }
+.total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
-#statusSelect {
-margin-top: 8px; border: 1px solid #ccc; background: white;
-color: black; font-size: 10px; border-radius: 3px; padding: 2px;
-}
-#statusLabel { font-weight: bold; margin-top: 5px; font-size: 13px; color: #00a8ff; }
+#statusSelect { margin-top: 8px; font-size: 11px; }
+#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; background: white; }
 
-.footer-wrap { margin-top: auto; padding-top: 20px; }
-.legal { font-size: 10.5px; line-height: 1.4; color: #333; margin-bottom: 10px; }
+.footer-wrap { margin-top: auto; }
+.legal { font-size: 10px; line-height: 1.4; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 5px; }
 .bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 9px; }
 
 @media print {
-@page { size: A4; margin: 1.5cm; }
+@page { size: A4; margin: 0; }
 body { background: white; padding: 0; }
-.container { box-shadow: none; min-height: 100%; padding: 0; width: 100%; display: block; }
-.no-print, .btn-del-row, #fileInput, #statusSelect { display: none !important; }
-.footer-wrap { position: relative; page-break-inside: avoid; margin-top: 30px; }
-.recipient input::placeholder, .table-input::placeholder { color: transparent; }
+.no-print, .btn-wrap { display: none !important; }
+.container { box-shadow: none; padding: 1.5cm 1.5cm 1cm 1.5cm; width: 100%; min-height: 297mm; }
+.footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
+.meta-box { background-color: #f0f0f0 !important; }
 }
 </style>
 </head>
 <body>
 
-<input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="loadLogo(event)">
-
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
-<button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
+<button onclick="addItem(true)" style="background: #2ecc71;">+ POSITION</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
-<button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 SPEICHERN</button>
 
 <div class="shipping-ctrl">
 <select id="shipSelect"></select>
-<button onclick="addShipping()" style="width: auto; background: #00a8ff; padding: 8px 15px;">+ VERSAND HINZUFÜGEN</button>
-<button onclick="manageShipping()" style="width: auto; background: #57606f; padding: 8px 15px;">⚙️ OPTIONEN</button>
+<button onclick="addShipping()" style="width: auto; background: #00a8ff; padding: 5px 15px;">+ VERSAND</button>
+<button onclick="manageShipping()" style="width: auto; background: #57606f; padding: 5px 15px;">⚙️ OPTIONEN</button>
 </div>
 </div>
 
@@ -125,32 +107,25 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </div>
 <div class="title-center" id="docType">Rechnung</div>
 <div class="logo-column">
-<div class="logo-placeholder" onclick="document.getElementById('fileInput').click()">
-<div id="logoContainer">
 <div class="logo-text"><span>D</span>3D</div>
-</div>
-</div>
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
-<div id="invMeta">
 <div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
-<div class="meta-row"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="calcDate()"></div>
+<div class="meta-row"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="calcDueDate()"></div>
 <div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 </div>
-</div>
-<div class="small-note" id="invNote">(Rechnungsnummer bei Zahlung bitte angeben)</div>
 </div>
 </div>
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
-<input type="text" placeholder="Straße Hausnummer">
-<input type="text" placeholder="PLZ Ort">
-<input type="text" class="tel-input" id="telField" placeholder="Handynummer (optional)">
+<input type="text" id="rec-name" placeholder="Vorname Nachname" style="width: 100%; border:none; font-size:13px; font-weight:bold;">
+<input type="text" placeholder="Straße Hausnummer" style="width: 100%; border:none; font-size:13px;">
+<input type="text" placeholder="PLZ Ort" style="width: 100%; border:none; font-size:13px;">
+<input type="text" placeholder="eBay-Name / Handy" style="width: 100%; border:none; font-size:13px;">
 </div>
 
-<p style="font-size: 12px; margin: 0 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+<p style="font-size: 12px; margin-top: 20px;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
@@ -160,7 +135,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <th style="width:10%">Anzahl</th>
 <th style="width:10%">Einheit</th>
 <th style="width:15%">Preis (€)</th>
-<th style="width:15%">Gesamt</th>
+<th style="width:15%">Gesamt (€)</th>
 </tr>
 </thead>
 <tbody id="itemsBody"></tbody>
@@ -170,24 +145,24 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <select id="statusSelect" class="no-print" onchange="updateStatus()">
 <option value="">Zahlstatus wählen...</option>
-<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
-<option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
-<option value="Offen">Offen</option>
+<option value="Betrag in bar erhalten">Bar erhalten</option>
+<option value="Betrag dankend erhalten">Vollständig bezahlt</option>
+<option value="Zahlung offen">Offen</option>
 </select>
 <div id="statusLabel"></div>
 </div>
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.<br>
-Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).<br>
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.
+Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontaktinformationen</strong><br>E-Mail: kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
-<div><strong>Steuerinformationen</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bankinformationen</strong><br>IBAN: DE65100110012856642824<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D Shop</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>Inh. Dominic Strzoda</div>
+<div><strong>Steuer-Details</strong><br>St-Nr: 112/279/00204<br>DE455897359-00001</div>
+<div><strong>Bankverbindung</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
 </div>
@@ -195,83 +170,66 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 <datalist id="prodList"></datalist>
 
 <script>
-let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter für Makita"];
-let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
-{name: "Versand (DHL Paket 52kg)", price: 5.49},
-{name: "Versand (Deutsche Post Brief)", price: 1.80},
-{name: "Versand (Warensendung)", price: 2.70}
-];
-let isInvoice = true;
+let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Makita Akkuhalter"];
+let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [{name: "Versand (DHL Paket)", price: 5.49}];
 
 function init() {
-document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
-const lastNum = localStorage.getItem('d3d_last_inv');
-if(lastNum) document.getElementById('invNum').value = incrementInvNum(lastNum);
-const savedLogo = localStorage.getItem('d3d_logo');
-if(savedLogo) document.getElementById('logoContainer').innerHTML = `<img src="${savedLogo}" class="logo-img-upload">`;
-updateDatalist();
+const today = new Date();
+document.getElementById('date').value = today.toLocaleDateString('de-DE');
+calcDueDate();
 updateShippingList();
-calcDate();
-for(let i=0; i<3; i++) addItem();
+updateDatalist();
+addItem(true);
 }
 
-function loadLogo(event) {
-const reader = new FileReader();
-reader.onload = function() {
-const dataURL = reader.result;
-localStorage.setItem('d3d_logo', dataURL);
-document.getElementById('logoContainer').innerHTML = `<img src="${dataURL}" class="logo-img-upload">`;
-};
-reader.readAsDataURL(event.target.files[0]);
+function calcDueDate() {
+const dateParts = document.getElementById('date').value.split('.');
+if(dateParts.length === 3) {
+const d = new Date(dateParts[2], dateParts[1]-1, dateParts[0]);
+const days = parseInt(document.getElementById('dueDays').value) || 0;
+d.setDate(d.getDate() + days);
+document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
+}
 }
 
-function incrementInvNum(oldNum) {
-return oldNum.replace(/(\d+)(?!.*\d)/, (match) => {
-let next = parseInt(match) + 1;
-return next.toString().padStart(match.length, '0');
-});
-}
-
-function saveAndPrint() {
-const type = isInvoice ? "Rechnung" : "Angebot";
-const nr = document.getElementById('invNum').value;
-const kunde = document.getElementById('rec-name').value.replace(/\s+/g, '_') || "Kunde";
-const originalTitle = document.title;
-document.title = `${type}_${nr}_${kunde}`;
-localStorage.setItem('d3d_last_inv', nr);
-window.print();
-setTimeout(() => { document.title = originalTitle; }, 1000);
-}
-
-function addItem(name = "", price = "") {
+function addItem(isAutoFill = false, name = "", price = "") {
 const body = document.getElementById('itemsBody');
 const row = body.insertRow();
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" placeholder="Bezeichnung..." value="${name}"></td>
-<td><input type="number" class="table-input" value="${name ? 1 : ''}" placeholder="1" oninput="calc()"></td>
-<td><input class="table-input" value="${name ? 'Stück' : ''}" placeholder="Stück"></td>
-<td><input type="number" class="table-input" value="${price}" placeholder="0.00" step="0.01" oninput="calc()"></td>
+<td><input class="table-input prod-name" list="prodList" value="${name}" placeholder="Artikel..."></td>
+<td><input type="number" class="table-input" value="${isAutoFill ? 1 : ''}" oninput="calc()"></td>
+<td><input class="table-input" value="${isAutoFill ? 'Stück' : ''}"></td>
+<td><input type="number" class="table-input" value="${price}" step="0.01" oninput="calc()"></td>
 <td style="font-weight:bold"><span class="row-total"></span>
-<button class="no-print btn-del-row" onclick="this.parentElement.parentElement.remove(); calc();">✕</button>
+<div class="btn-wrap no-print">
+<button class="row-btn btn-check" title="Personalisierung" onclick="markPers(this)">✓</button>
+<button class="row-btn btn-del" onclick="this.closest('tr').remove(); calc();">✕</button>
+</div>
 </td>
 `;
 calc();
 }
 
+function markPers(btn) {
+const input = btn.closest('tr').querySelector('.prod-name');
+if(!input.value.includes('(Personalisierte Anfertigung)')) {
+input.value += " (Personalisierte Anfertigung)";
+}
+}
+
 function addShipping() {
 const sel = document.getElementById('shipSelect');
 const opt = shippingOptions[sel.selectedIndex];
-if(opt) addItem(opt.name, opt.price);
+if(opt) addItem(true, opt.name, opt.price);
 }
 
 function manageShipping() {
-let raw = prompt("Versandarten verwalten (Format: Name:Preis, mit Komma trennen):",
-shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
+let raw = prompt("Versandarten (Name:Preis, mit Komma trennen):", shippingOptions.map(o => `${o.name}:${o.price}`).join(", "));
 if(raw) {
-shippingOptions = raw.split(",").map(part => {
-let [n, p] = part.split(":");
-return {name: n.trim(), price: parseFloat(p.trim()) || 0};
+shippingOptions = raw.split(",").map(p => {
+let [n, pr] = p.split(":");
+return {name: n.trim(), price: pr.trim()};
 });
 localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
 updateShippingList();
@@ -279,8 +237,7 @@ updateShippingList();
 }
 
 function updateShippingList() {
-const sel = document.getElementById('shipSelect');
-sel.innerHTML = shippingOptions.map((o, i) => `<option value="${i}">${o.name} (${o.price.toFixed(2)} €)</option>`).join('');
+document.getElementById('shipSelect').innerHTML = shippingOptions.map(o => `<option>${o.name} (${o.price} €)</option>`).join('');
 }
 
 function calc() {
@@ -297,11 +254,19 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function calcDate() {
-const days = parseInt(document.getElementById('dueDays').value) || 0;
-const d = new Date();
-d.setDate(d.getDate() + days);
-document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
+function toggleType() {
+const type = document.getElementById('docType');
+type.innerText = type.innerText === "Rechnung" ? "Angebot" : "Rechnung";
+}
+
+function updateStatus() {
+document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value;
+}
+
+function saveAndPrint() { window.print(); }
+
+function updateDatalist() {
+document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
 }
 
 function saveProduct() {
@@ -309,36 +274,10 @@ const names = document.querySelectorAll('.prod-name');
 names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
 localStorage.setItem('d3d_prods', JSON.stringify(products));
 updateDatalist();
-alert("Produkte gespeichert!");
-}
-
-function manageProducts() {
-let toDelete = prompt("Produkt löschen:\n" + products.join(", "));
-if(toDelete) {
-products = products.filter(p => p.toLowerCase() !== toDelete.toLowerCase());
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist();
-}
-}
-
-function updateDatalist() {
-document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join('');
-}
-
-function toggleType() {
-isInvoice = !isInvoice;
-document.getElementById('docType').innerText = isInvoice ? "Rechnung" : "Angebot";
-document.getElementById('typeBtn').innerText = isInvoice ? "ZU ANGEBOT" : "ZU RECHNUNG";
-document.getElementById('statusSelect').style.display = isInvoice ? "block" : "none";
-document.getElementById('introText').innerText = isInvoice ? "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:" : "Gerne unterbreiten wir Ihnen folgendes Angebot:";
-}
-
-function updateStatus() {
-document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value;
+alert("Gespeichert!");
 }
 
 init();
 </script>
 </body>
 </html>
-
