@@ -11,6 +11,11 @@
 --accent: #00a8ff;
 --text-main: #e0e0e0;
 --doc-white: #ffffff;
+--btn-green: #27ae60;
+--btn-purple: #8e44ad;
+--btn-orange: #f39c12;
+--btn-red: #c0392b;
+--btn-grey: #7f8c8d;
 }
 
 * { box-sizing: border-box; }
@@ -22,122 +27,162 @@ padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
 box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
+/* UI DASHBOARD - MODERN GRID */
 .no-print {
-display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
-padding: 15px; border-radius: 10px;
-}
-.no-print button {
-width: 100%; padding: 12px; border-radius: 6px; border: none;
-cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
-}
-
-/* ARCHIV STYLING - JETZT KOMPAKTER */
-.archive-area {
-grid-column: span 3; background: #2c3135; padding: 15px; border-radius: 6px;
-margin-top: 10px; border: 1px dashed var(--accent);
-}
-.archive-list { max-height: 180px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
-
-.archive-item {
-display: flex; justify-content: space-between; align-items: center; padding: 6px 10px;
-border-bottom: 1px solid #444; transition: 0.2s; gap: 10px;
-}
-.archive-item:hover { background: rgba(0, 168, 255, 0.1); }
-
-.archive-info {
-flex: 1; display: flex; justify-content: space-between; cursor: pointer;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+max-width: 900px;
+margin: 0 auto 15px auto;
+background: var(--ui-card);
+padding: 15px;
+border-radius: 10px;
 }
 
-/* Kleiner Roter X-Button (Analog zu Versand-Buttons) */
-.btn-del-arch {
-width: 24px; height: 24px; background: #ff4757; color: white; border: none;
-border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;
-display: flex; align-items: center; justify-content: center; transition: 0.2s;
-flex-shrink: 0; padding: 0;
-}
-.btn-del-arch:hover { background: #ff6b81; transform: scale(1.1); }
-
-#archiveSearch { width: 100%; padding: 8px; border-radius: 4px; border: none; margin-bottom: 5px; background: #1c1f22; color: white; }
-
+/* Stats immer über die ganze Breite */
 .stats-display {
-grid-column: span 3; background: rgba(0, 168, 255, 0.1);
-border: 1px solid var(--accent); padding: 10px; border-radius: 6px;
-display: flex; justify-content: space-between; align-items: center;
-font-size: 13px; font-weight: bold; color: var(--accent);
+grid-column: span 2;
+background: rgba(0, 168, 255, 0.1);
+border: 1px solid var(--accent);
+padding: 12px;
+border-radius: 6px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 14px;
+font-weight: bold;
+color: var(--accent);
 }
 
-.import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
-.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
+.no-print button {
+width: 100%;
+height: 50px; /* Einheitliche Höhe */
+border-radius: 6px;
+border: none;
+cursor: pointer;
+font-weight: bold;
+color: white;
+font-size: 11px;
+transition: 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 5px;
+}
+
+/* Spezielle Anordnung für die Buttons */
+.btn-full { grid-column: span 2; }
+
+/* Lösch-Sektion Styling */
+.delete-section {
+grid-column: span 2;
+display: flex;
+gap: 2px;
+height: 50px;
+}
+#prodDeleteSelect {
+flex: 1;
+background: var(--btn-red);
+color: white;
+border: none;
+border-radius: 6px 0 0 6px;
+padding: 0 10px;
+font-weight: bold;
+font-size: 11px;
+}
+.btn-del-icon {
+width: 50px !important;
+background: #a93226 !important;
+border-radius: 0 6px 6px 0 !important;
+font-size: 18px !important;
+}
+
+/* IMPORT & VERSAND */
+.import-area {
+grid-column: span 2;
+display: flex;
+flex-direction: column;
+gap: 8px;
+background: rgba(255,255,255,0.05);
+padding: 10px;
+border-radius: 6px;
+}
+.import-area textarea {
+width: 100%; height: 60px; background: #2c3135; color: white; border: 1px solid #444;
+padding: 8px; border-radius: 4px; font-size: 12px; resize: none;
+}
 
 .shipping-manager {
-grid-column: span 3; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px;
+grid-column: span 2; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;
 display: flex; flex-direction: column; gap: 8px;
 }
-.ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
-.ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
-.ship-btns { display: flex; gap: 8px; }
+.ship-row { display: flex; gap: 8px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
+.ship-info { flex: 1; font-size: 12px; color: white; }
+.ship-btns { display: flex; gap: 5px; }
 
 .btn-s {
-width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer;
+width: 32px; height: 32px; border-radius: 4px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-font-size: 18px; font-weight: bold; line-height: 0; padding: 0;
+font-size: 16px; font-weight: bold;
 }
 
+/* ARCHIV */
+.archive-area {
+grid-column: span 2; background: #1c1f22; padding: 15px; border-radius: 6px;
+margin-top: 5px; border: 1px dashed var(--accent);
+}
+.archive-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+.archive-item {
+display: flex; justify-content: space-between; align-items: center; padding: 8px;
+border-bottom: 1px solid #333; font-size: 12px;
+}
+.btn-del-arch {
+width: 28px; height: 28px; background: #ff4757; color: white; border: none; border-radius: 4px; cursor: pointer;
+}
+
+/* RECHNUNGS-DESIGN (A4) */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
-.title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
+.title-center { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
 .logo-column { display: flex; flex-direction: column; align-items: flex-end; }
-.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; }
+.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; }
 .logo-text span { transform: scaleX(-1); display: inline-block; }
 
-.meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
+.meta-box { background: #f0f0f0; padding: 10px; border-radius: 4px; width: 250px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
-.meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
-.meta-hint { font-size: 9px; color: #555; text-align: center; display: block; margin-top: 5px; font-style: italic; }
+.meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; font-size: 11px; }
 
-.recipient { margin: 5px 0 15px 0; width: 350px; }
-.recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
+.recipient { margin: 10px 0 20px 0; width: 350px; }
+.recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; background: transparent; outline: none; }
 
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
-td { border: 1px solid #000; padding: 4px; position: relative; }
-.table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
+td { border: 1px solid #000; padding: 6px; position: relative; }
+.table-input { width: 100%; border: none; font-size: 12px; background: transparent; outline: none; }
 
-.row-btns { position: absolute; right: -75px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
-.btn-action {
-width: 28px; height: 28px; border-radius: 6px; border: none !important;
-cursor: pointer; display: flex; align-items: center; justify-content: center;
-color: white; font-weight: bold; font-size: 16px; line-height: 0; padding: 0;
-}
+.row-btns { position: absolute; right: -70px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
+.btn-action { width: 26px; height: 26px; border-radius: 4px; border: none; cursor: pointer; color: white; font-weight: bold; }
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
-#statusSelect { margin-top: 8px; background: white; color: black; border: 1px solid #ccc; font-size: 11px; padding: 3px; border-radius: 4px; }
-#statusLabel { font-weight: bold; margin-top: 5px; font-size: 14px; color: black; }
-
 .footer-wrap { margin-top: auto; }
-.legal { font-size: 10px; line-height: 1.6; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-.bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 9px; }
+.legal { font-size: 9px; line-height: 1.5; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+.bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 8.5px; }
 
-@media print {
-@page { size: A4; margin: 0; }
-body { background: white; padding: 0; margin: 0; }
-.no-print, .row-btns { display: none !important; }
-.container { box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none; margin: 0; position: relative; overflow: hidden; }
-.footer-wrap { position: absolute; bottom: 1.5cm; left: 1.5cm; right: 1.5cm; margin: 0; }
-input { border: none !important; }
-#rec-tel:placeholder-shown { display: none !important; }
+/* DESKTOP OPTIMIERUNG */
+@media screen and (min-width: 600px) {
+.no-print { grid-template-columns: repeat(3, 1fr); }
+.stats-display, .btn-full, .delete-section, .import-area, .shipping-manager, .archive-area { grid-column: span 3; }
+.import-area { flex-direction: row; }
+.import-area button { width: 200px; }
 }
 
-@media screen and (max-width: 600px) {
-.header-main { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.logo-column { align-items: center; width: 100%; margin-top: 10px; }
-.addr-left { min-width: 100%; margin-bottom: 10px; }
-.meta-box { width: 100%; }
-.no-print { grid-template-columns: 1fr 1fr; }
-.import-area, .shipping-manager, .stats-display, .archive-area { grid-column: span 2; }
+@media print {
+.no-print, .row-btns { display: none !important; }
+body { background: white; padding: 0; }
+.container { box-shadow: none; width: 210mm; height: 297mm; padding: 1.5cm; }
 }
 </style>
 </head>
@@ -145,33 +190,34 @@ input { border: none !important; }
 
 <div class="no-print">
 <div class="stats-display">
-<span>Einnahmen Tracker (Diesen Monat):</span>
+<span>Einnahmen (Diesen Monat):</span>
 <span id="monthlyRevenue">0.00 €</span>
-<button onclick="resetStats()" style="width:auto; padding:5px 10px; background:#c0392b; font-size:9px;">RESET</button>
+<button onclick="resetStats()" style="width:60px; height:25px; background:#c0392b; font-size:9px;">RESET</button>
 </div>
 
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & ARCHIVIEREN</button>
-<button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN (Inkl. Preis)</button>
-<div style="display:flex; gap:2px;">
-<select id="prodDeleteSelect" style="flex:1; background:#c0392b; color:white; border:none; border-radius:6px 0 0 6px; padding:12px; font-weight:bold; font-size:11px; cursor:pointer;">
-<option value="">Wähle Produkt zum Löschen...</option>
+<button onclick="saveAndPrint()" style="background: var(--btn-green);" class="btn-full">🖨️ DRUCKEN & ARCHIVIEREN</button>
+<button onclick="toggleType()" id="typeBtn" style="background: var(--btn-purple);">ZU ANGEBOT</button>
+<button onclick="addItem()" style="background: var(--btn-green);">+ POSITION</button>
+<button onclick="saveProduct()" style="background: var(--btn-orange);">💾 PRODUKT SPEICHERN</button>
+<button onclick="clearForm()" style="background: var(--btn-grey);">♻️ LEEREN</button>
+
+<div class="delete-section">
+<select id="prodDeleteSelect">
+<option value="">Produkt löschen...</option>
 </select>
-<button onclick="deleteProductFromSelect()" style="width:40px; background:#c0392b; border-radius:0 6px 6px 0; font-size:14px;">🗑️</button>
+<button class="btn-del-icon" onclick="deleteProductFromSelect()">🗑️</button>
 </div>
-<button onclick="clearForm()" style="background: #7f8c8d;">♻️ FORMULAR LEEREN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="...Adresse importieren..."></textarea>
-<button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
+<textarea id="adrImport" placeholder="eBay Adresse hier einfügen..."></textarea>
+<button onclick="importAddress()" style="background: #00a8ff;">ADRESSE IMPORTIEREN</button>
 </div>
 
 <div class="shipping-manager" id="shipManager"></div>
 
 <div class="archive-area">
-<h4 style="margin:0 0 10px 0; color:var(--accent)">Rechnungs-Archiv</h4>
-<input type="text" id="archiveSearch" placeholder="Suche nach Name oder Nr..." oninput="renderArchive()">
+<strong style="color:var(--accent); font-size:12px;">Rechnungs-Archiv</strong>
+<input type="text" id="archiveSearch" placeholder="Suche..." oninput="renderArchive()" style="width:100%; margin-top:5px; padding:5px; background:#2c3135; border:none; color:white; border-radius:4px;">
 <div class="archive-list" id="archiveList"></div>
 </div>
 </div>
@@ -179,7 +225,7 @@ input { border: none !important; }
 <div class="container" id="invoiceWrap">
 <div class="header-main">
 <div class="addr-left">
-<h2>D3D</h2>
+<strong>D3D</strong><br>
 Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </div>
 <div class="title-center" id="docType">Rechnung</div>
@@ -188,9 +234,8 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
 <div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum"></div>
-<div class="meta-row meta-hide"><span>Zahlungsziel (in Tage):</span><input type="number" id="dueDays" value="0" oninput="updateDueDate()"></div>
+<div class="meta-row meta-hide"><span>Zahlungsziel:</span><input type="number" id="dueDays" value="0" oninput="updateDueDate()"></div>
 <div class="meta-row meta-hide"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
-<span class="meta-hint meta-hide">(Rechnungsnummer bei Zahlung bitte angeben)</span>
 </div>
 </div>
 </div>
@@ -201,16 +246,16 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
+<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
 </div>
 
-<p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
+<p style="font-size: 12px; margin-bottom: 10px;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
 <tr>
 <th style="width:5%">Pos.</th>
-<th style="width:45%">Bezeichnung</th>
+<th>Bezeichnung</th>
 <th style="width:10%">Anzahl</th>
 <th style="width:10%">Einheit</th>
 <th style="width:15%">Preis (€)</th>
@@ -223,26 +268,24 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="summary-area">
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <div id="statusSection">
-<select id="statusSelect" class="no-print" onchange="updateStatus()">
+<select id="statusSelect" class="no-print" onchange="updateStatus()" style="margin-top:10px;">
 <option value="">Zahlstatus wählen...</option>
-<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
+<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Offen">Offen</option>
 </select>
-<div id="statusLabel"></div>
+<div id="statusLabel" style="font-weight:bold; margin-top:5px;"></div>
 </div>
 </div>
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.<br>
-Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).<br>
-Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG). Personalisierte Waren sind vom Umtausch ausgeschlossen.
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
+<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
 <div><strong>Kontakt</strong><br>Email: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Steuer</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
@@ -254,8 +297,8 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 let products = JSON.parse(localStorage.getItem('d3d_prods_v2')) || [];
 let archive = JSON.parse(localStorage.getItem('d3d_archive')) || [];
 let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
-{name: "Versand (DHL Paket)", price: 5.49},
-{name: "Versand (Großbrief)", price: 2.25}
+{name: "Verpackung+Versand", price: 2.00},
+{name: "DHL Päckchen M", price: 5.19}
 ];
 
 function init() {
@@ -269,214 +312,6 @@ loadStats();
 for(let i=0; i<3; i++) addItem();
 }
 
-// ARCHIV FUNKTIONEN
-function archiveCurrent() {
-const doc = {
-id: Date.now(),
-type: document.getElementById('docType').innerText,
-invNum: document.getElementById('invNum').value,
-date: document.getElementById('date').value,
-name: document.getElementById('rec-name').value || "Unbekannter Kunde",
-street: document.getElementById('rec-street').value,
-city: document.getElementById('rec-city').value,
-country: document.getElementById('rec-country').value,
-tel: document.getElementById('rec-tel').value,
-total: document.getElementById('grandTotal').innerText,
-status: document.getElementById('statusSelect').value,
-items: []
-};
-
-const rows = document.querySelectorAll('#itemsBody tr');
-rows.forEach(row => {
-const name = row.querySelector('.prod-name').value;
-if(name) {
-doc.items.push({
-name: name,
-qty: row.querySelector('.qty-field').value,
-unit: row.querySelector('.unit-field').value,
-price: row.querySelector('.price-field').value
-});
-}
-});
-
-archive.unshift(doc);
-if(archive.length > 200) archive.pop();
-localStorage.setItem('d3d_archive', JSON.stringify(archive));
-renderArchive();
-}
-
-function renderArchive() {
-const list = document.getElementById('archiveList');
-const search = document.getElementById('archiveSearch').value.toLowerCase();
-list.innerHTML = "";
-
-archive.filter(doc =>
-doc.name.toLowerCase().includes(search) ||
-doc.invNum.toLowerCase().includes(search)
-).forEach(doc => {
-const item = document.createElement('div');
-item.className = 'archive-item';
-item.innerHTML = `
-<div class="archive-info" onclick="loadFromArchive(${doc.id})">
-<span><strong>${doc.invNum}</strong> - ${doc.name}</span>
-<span>${doc.total} €</span>
-</div>
-<button class="btn-del-arch" title="Löschen" onclick="deleteFromArchive(event, ${doc.id})">✕</button>
-`;
-list.appendChild(item);
-});
-}
-
-function deleteFromArchive(event, id) {
-event.stopPropagation();
-if(confirm("Diese Rechnung wirklich aus dem Archiv löschen?")) {
-archive = archive.filter(d => d.id !== id);
-localStorage.setItem('d3d_archive', JSON.stringify(archive));
-renderArchive();
-}
-}
-
-function loadFromArchive(id) {
-const doc = archive.find(d => d.id === id);
-if(!doc) return;
-
-if(confirm("Rechnung laden? Aktuelle Daten werden überschrieben.")) {
-document.getElementById('docType').innerText = doc.type;
-document.getElementById('invNum').value = doc.invNum;
-document.getElementById('date').value = doc.date;
-document.getElementById('rec-name').value = doc.name;
-document.getElementById('rec-street').value = doc.street;
-document.getElementById('rec-city').value = doc.city;
-document.getElementById('rec-country').value = doc.country;
-document.getElementById('rec-tel').value = doc.tel;
-
-const body = document.getElementById('itemsBody');
-body.innerHTML = "";
-doc.items.forEach(item => {
-addItem(item.name, item.price);
-const lastRow = body.lastElementChild;
-lastRow.querySelector('.qty-field').value = item.qty;
-lastRow.querySelector('.unit-field').value = item.unit;
-});
-document.getElementById('statusSelect').value = doc.status;
-updateStatus();
-calc();
-}
-}
-
-// PRODUKT SPEICHERN & DROPDOWN LÖSCHEN
-function saveProduct() {
-const rows = document.querySelectorAll('#itemsBody tr');
-let count = 0;
-rows.forEach(row => {
-const name = row.querySelector('.prod-name').value;
-const price = row.querySelector('.price-field').value;
-if(name && price) {
-const index = products.findIndex(p => p.name === name);
-if(index > -1) products[index].price = price;
-else products.push({name: name, price: price});
-count++;
-}
-});
-localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
-updateDatalist();
-alert(count + " Produkte/Preise gespeichert!");
-}
-
-function updateDatalist() {
-const dl = document.getElementById('prodList');
-const delSelect = document.getElementById('prodDeleteSelect');
-dl.innerHTML = products.map(p => `<option value="${p.name}">`).join('');
-delSelect.innerHTML = '<option value="">Wähle Produkt zum Löschen...</option>' +
-products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
-}
-
-function deleteProductFromSelect() {
-const sel = document.getElementById('prodDeleteSelect');
-const val = sel.value;
-if(!val) { alert("Bitte erst ein Produkt im Dropdown auswählen!"); return; }
-if(confirm(`"${val}" wirklich löschen?`)) {
-products = products.filter(p => p.name !== val);
-localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
-updateDatalist();
-}
-}
-
-function handleProdInput(input) {
-const name = input.value;
-const found = products.find(p => p.name === name);
-if(found) {
-const row = input.closest('tr');
-row.querySelector('.price-field').value = found.price;
-toggleAutoFields(input);
-calc();
-} else {
-toggleAutoFields(input);
-}
-}
-
-function importAddress() {
-const raw = document.getElementById('adrImport').value;
-const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-if(lines.length >= 3) {
-document.getElementById('rec-name').value = lines[0];
-document.getElementById('rec-street').value = lines[1];
-document.getElementById('rec-city').value = lines[2];
-const telMatch = raw.match(/(?:Tel|Phone|eBay|Name|Mobil|Handy):?\s*(.*)/i);
-if(telMatch) document.getElementById('rec-tel').value = telMatch[1];
-else if (lines[3]) {
-document.getElementById('rec-country').value = lines[3];
-if(lines[4]) document.getElementById('rec-tel').value = lines[4];
-} else document.getElementById('rec-country').value = "Deutschland";
-}
-}
-
-function renderShippingManager() {
-const container = document.getElementById('shipManager');
-container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
-shippingOptions.forEach((opt, index) => {
-const row = document.createElement('div');
-row.className = 'ship-row';
-row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
-container.appendChild(row);
-});
-const addRow = document.createElement('div');
-addRow.className = 'ship-row'; addRow.style.background = 'rgba(46, 204, 113, 0.1)';
-addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neu...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
-container.appendChild(addRow);
-}
-
-function addNewShipping() {
-let n = prompt("Versandname:");
-let p = prompt("Preis:");
-if(n && p) {
-shippingOptions.push({name:n, price:parseFloat(p.replace(',','.'))});
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function editShipping(index) {
-let opt = shippingOptions[index];
-let n = prompt("Name ändern:", opt.name);
-let p = prompt("Preis ändern:", opt.price);
-if(n && p) {
-shippingOptions[index] = {name: n, price: parseFloat(String(p).replace(',','.'))};
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function deleteShipping(index) {
-if(confirm("Diese Versandart löschen?")) {
-shippingOptions.splice(index, 1);
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
-
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
@@ -486,68 +321,38 @@ let count = parseInt(localStorage.getItem(storageKey)) || 1;
 document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
 }
 
-function saveAndPrint() {
-// 1. Archivierung und Statistik wie bisher
-archiveCurrent();
-const type = document.getElementById('docType').innerText;
-const invNum = document.getElementById('invNum').value;
-const name = document.getElementById('rec-name').value || "Unbekannt";
-
-if(type === "RECHNUNG") {
-const total = parseFloat(document.getElementById('grandTotal').innerText);
-const stats = JSON.parse(localStorage.getItem('d3d_stats')) || {revenue:0};
-stats.revenue += total;
-localStorage.setItem('d3d_stats', JSON.stringify(stats));
-const prefix = invNum.slice(0, 5);
-const storageKey = `d3d_count_${prefix}`;
-localStorage.setItem(storageKey, (parseInt(localStorage.getItem(storageKey)) || 1) + 1);
-loadStats();
-}
-
-// 2. Dynamische Benennung
-const defaultName = `${type}_${invNum}_${name.replace(/\s+/g, '_')}`;
-const customName = prompt("Dateiname für PDF angeben:", defaultName);
-
-if (customName !== null) {
-const originalTitle = document.title;
-document.title = customName; // Ändert den Titel kurzzeitig für das System
-window.print();
-
-// Nach dem Drucken Titel zurücksetzen (nach einer kurzen Verzögerung)
-setTimeout(() => { document.title = originalTitle; }, 1000);
-}
-}
-
-
 function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
 const row = body.insertRow();
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
 <td><input class="table-input prod-name" list="prodList" value="${name}" oninput="handleProdInput(this)"></td>
-<td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
-<td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
-<td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
-<td style="font-weight:bold"><span class="row-total"></span><div class="row-btns no-print"><button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button><button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button></div></td>`;
-if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
+<td><input type="number" class="table-input qty-field" value="${name?1:''}" oninput="calc()"></td>
+<td><input class="table-input unit-field" value="${name?'Stück':''}"></td>
+<td><input type="number" class="table-input price-field" value="${price}" step="0.01" oninput="calc()"></td>
+<td style="font-weight:bold"><span class="row-total"></span>
+<div class="row-btns no-print">
+<button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
+<button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
+</div>
+</td>`;
 calc();
 }
 
-function toggleAutoFields(input) {
+function handleProdInput(input) {
+const found = products.find(p => p.name === input.value);
+if(found) {
 const row = input.closest('tr');
-const qty = row.querySelector('.qty-field');
-const unit = row.querySelector('.unit-field');
-if(input.value.trim() !== "") {
-qty.style.visibility = "visible"; unit.style.visibility = "visible";
-if(qty.value === "") qty.value = 1;
-if(unit.value === "") unit.value = "Stück";
-} else { qty.style.visibility = "hidden"; unit.style.visibility = "hidden"; }
+row.querySelector('.price-field').value = found.price;
+row.querySelector('.qty-field').value = 1;
+row.querySelector('.unit-field').value = "Stück";
+calc();
+}
 }
 
 function calc() {
 let total = 0;
-const rows = document.querySelectorAll('#itemsBody tr');
-rows.forEach((row, i) => {
+document.querySelectorAll('#itemsBody tr').forEach((row, i) => {
 row.cells[0].innerText = i + 1;
 const q = row.querySelector('.qty-field').value || 0;
 const p = row.querySelector('.price-field').value || 0;
@@ -558,22 +363,162 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function formatPrice(input) { let v = parseFloat(input.value.replace(',','.')); if(!isNaN(v)) input.value = v.toFixed(2); calc(); }
+function saveAndPrint() {
+const type = document.getElementById('docType').innerText;
+const total = parseFloat(document.getElementById('grandTotal').innerText);
+
+// 1. Archivierung
+archiveCurrent();
+
+// 2. Statistik & Rechnungsnummer (NUR BEI RECHNUNG)
+if(type === "RECHNUNG") {
+// Stats aktualisieren
+const m = new Date().getMonth() + "_" + new Date().getFullYear();
+let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0};
+s.revenue += total;
+localStorage.setItem('d3d_stats', JSON.stringify(s));
+
+// Zähler für Rechnungsnummer hochsetzen
+const invNum = document.getElementById('invNum').value;
+const prefix = invNum.slice(0, 5);
+localStorage.setItem(`d3d_count_${prefix}`, (parseInt(localStorage.getItem(`d3d_count_${prefix}`)) || 1) + 1);
+
+loadStats(); // UI sofort aktualisieren
+}
+
+// 3. Drucken
+const name = document.getElementById('rec-name').value || "Unbekannt";
+const filename = `${type}_${document.getElementById('invNum').value}_${name.replace(/\s+/g, '_')}`;
+const oldTitle = document.title;
+document.title = filename;
+window.print();
+setTimeout(() => { document.title = oldTitle; }, 1000);
+}
+
+function archiveCurrent() {
+const doc = {
+id: Date.now(),
+type: document.getElementById('docType').innerText,
+invNum: document.getElementById('invNum').value,
+name: document.getElementById('rec-name').value || "Unbekannt",
+total: document.getElementById('grandTotal').innerText,
+date: document.getElementById('date').value
+};
+archive.unshift(doc);
+if(archive.length > 100) archive.pop();
+localStorage.setItem('d3d_archive', JSON.stringify(archive));
+renderArchive();
+}
+
+function renderArchive() {
+const list = document.getElementById('archiveList');
+const query = document.getElementById('archiveSearch').value.toLowerCase();
+list.innerHTML = "";
+archive.filter(d => d.name.toLowerCase().includes(query) || d.invNum.toLowerCase().includes(query)).forEach(doc => {
+const item = document.createElement('div');
+item.className = 'archive-item';
+item.innerHTML = `<span>${doc.invNum} - ${doc.name} (${doc.total}€)</span><button class="btn-del-arch" onclick="deleteArchiveItem(${doc.id})">✕</button>`;
+list.appendChild(item);
+});
+}
+
+function deleteArchiveItem(id) {
+if(confirm("Löschen?")) {
+archive = archive.filter(d => d.id !== id);
+localStorage.setItem('d3d_archive', JSON.stringify(archive));
+renderArchive();
+}
+}
+
+function loadStats() {
+const m = new Date().getMonth() + "_" + new Date().getFullYear();
+let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0};
+if(s.month !== m) { s.month = m; s.revenue = 0; localStorage.setItem('d3d_stats', JSON.stringify(s)); }
+document.getElementById('monthlyRevenue').innerText = s.revenue.toFixed(2) + " €";
+}
+
+function resetStats() {
+if(confirm("Einnahmen wirklich auf 0 setzen?")) {
+const m = new Date().getMonth() + "_" + new Date().getFullYear();
+localStorage.setItem('d3d_stats', JSON.stringify({month:m, revenue:0}));
+loadStats();
+}
+}
+
+function importAddress() {
+const raw = document.getElementById('adrImport').value;
+const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+if(lines.length >= 3) {
+document.getElementById('rec-name').value = lines[0];
+document.getElementById('rec-street').value = lines[1];
+document.getElementById('rec-city').value = lines[2];
+const telMatch = raw.match(/(?:Tel|Phone|eBay|Name|Mobil|Handy|Nutzer):?\s*(.*)/i);
+if(telMatch) document.getElementById('rec-tel').value = telMatch[1];
+}
+}
+
+function saveProduct() {
+const rows = document.querySelectorAll('#itemsBody tr');
+rows.forEach(row => {
+const n = row.querySelector('.prod-name').value;
+const p = row.querySelector('.price-field').value;
+if(n && p) {
+const i = products.findIndex(x => x.name === n);
+if(i > -1) products[i].price = p;
+else products.push({name:n, price:p});
+}
+});
+localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
+updateDatalist();
+alert("Produkte gespeichert!");
+}
+
+function updateDatalist() {
+document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p.name}">`).join('');
+document.getElementById('prodDeleteSelect').innerHTML = '<option value="">Produkt löschen...</option>' + products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+}
+
+function deleteProductFromSelect() {
+const val = document.getElementById('prodDeleteSelect').value;
+if(val && confirm(val + " löschen?")) {
+products = products.filter(p => p.name !== val);
+localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
+updateDatalist();
+}
+}
+
+function renderShippingManager() {
+const container = document.getElementById('shipManager');
+container.innerHTML = '<strong style="color:var(--accent); font-size:12px;">Versand-Optionen</strong>';
+shippingOptions.forEach((opt, i) => {
+const row = document.createElement('div');
+row.className = 'ship-row';
+row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)}€)</div>
+<div class="ship-btns">
+<button class="btn-s" style="background:#00a8ff" onclick="addItem('${opt.name}', '${opt.price}')">+</button>
+<button class="btn-s" style="background:#ff4757" onclick="deleteShip(${i})">✕</button>
+</div>`;
+container.appendChild(row);
+});
+}
+
+function deleteShip(i) {
+shippingOptions.splice(i, 1);
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
 function updateDueDate() { const d = new Date(); d.setDate(d.getDate() + (parseInt(document.getElementById('dueDays').value) || 0)); document.getElementById('dueDate').value = d.toLocaleDateString('de-DE'); }
-function loadStats() { const m = new Date().getMonth() + "_" + new Date().getFullYear(); let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0}; if(s.month!==m){s.month=m; s.revenue=0;} document.getElementById('monthlyRevenue').innerText = s.revenue.toFixed(2) + " €"; }
-function resetStats() { if(confirm("Reset?")) { localStorage.setItem('d3d_stats', JSON.stringify({month:new Date().getMonth()+"_"+new Date().getFullYear(), revenue:0})); loadStats(); } }
-function markPers(btn) { const i = btn.closest('tr').querySelector('.prod-name'); if(!i.value.includes('(Personalisierte Anfertigung)')) { i.value += " (Personalisierte Anfertigung)"; handleProdInput(i); } }
 function toggleType() {
 const t = document.getElementById('docType'), b = document.getElementById('typeBtn'), s = document.getElementById('statusSection'), m = document.querySelectorAll('.meta-hide');
 if(t.innerText === "RECHNUNG") { t.innerText = "ANGEBOT"; b.innerText = "ZU RECHNUNG"; s.style.display="none"; m.forEach(e=>e.style.display="none"); }
 else { t.innerText = "RECHNUNG"; b.innerText = "ZU ANGEBOT"; s.style.display="block"; m.forEach(e=>e.style.display="flex"); }
 }
-function clearForm() { if(confirm("Leeren?")) { document.querySelectorAll('.recipient input').forEach(i=>i.value=""); document.getElementById('itemsBody').innerHTML=""; generateInvoiceNumber(); for(let i=0; i<3; i++) addItem(); calc(); } }
+function clearForm() { if(confirm("Formular leeren?")) { document.querySelectorAll('.recipient input').forEach(i=>i.value=""); document.getElementById('itemsBody').innerHTML=""; generateInvoiceNumber(); for(let i=0; i<3; i++) addItem(); calc(); } }
+function markPers(btn) { const i = btn.closest('tr').querySelector('.prod-name'); if(!i.value.includes('(Personalisierte Anfertigung)')) { i.value += " (Personalisierte Anfertigung)"; } }
 
 init();
 </script>
 </body>
 </html>
-
-
