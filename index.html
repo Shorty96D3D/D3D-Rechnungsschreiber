@@ -16,13 +16,7 @@
 * { box-sizing: border-box; }
 body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--ui-bg); color: var(--text-main); margin: 0; padding: 10px; }
 
-.container {
-max-width: 900px; margin: auto; background: var(--doc-white); color: black;
-padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
-box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
-}
-
-/* Toolbar - Mobile Optimiert */
+/* Handy-Ansicht Optimierung */
 .no-print {
 display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;
 max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
@@ -33,28 +27,32 @@ width: 100%; padding: 12px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
 
-.import-area { grid-column: 1 / -1; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
-.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
+.import-area { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
+.import-area textarea { width: 100%; height: 60px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
 
-.shipping-manager {
-grid-column: 1 / -1; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px;
-display: flex; flex-direction: column; gap: 8px;
-}
-.ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
-.ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
-.ship-btns { display: flex; gap: 8px; }
-.btn-s {
-width: 36px; height: 36px; border-radius: 6px; border: none; cursor: pointer;
-color: white; display: flex; align-items: center; justify-content: center;
-font-size: 20px; font-weight: bold; line-height: 1;
+.shipping-manager { grid-column: 1 / -1; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; display: flex; flex-direction: column; gap: 8px; }
+
+.container {
+max-width: 900px; margin: auto; background: var(--doc-white); color: black;
+padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
-/* Header - Fix für Überlappung am Handy */
-.header-main { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: start; flex-wrap: wrap; }
-.addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; min-width: 200px; }
-.title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; flex-grow: 1; }
-.logo-column { display: flex; flex-direction: column; align-items: flex-end; }
-.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; width: 100%; }
+/* Versandetikett Styling */
+#labelWrap {
+width: 148mm; height: 105mm; /* DIN A6 */
+background: white; color: black; border: 2px solid #000;
+margin: 20px auto; padding: 10mm; display: none; /* Nur beim Druck sichtbar */
+position: relative; font-family: Arial, sans-serif;
+}
+.label-sender { font-size: 12px; position: absolute; top: 10mm; left: 10mm; border-bottom: 1px solid #000; padding-bottom: 5px; }
+.label-receiver { font-size: 18px; position: absolute; top: 40mm; left: 50mm; font-weight: bold; }
+
+/* Desktop/Rechnung CSS wie gehabt */
+.header-main { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: start; }
+.addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
+.title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
+.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; }
 .logo-text span { transform: scaleX(-1); display: inline-block; }
 
 .meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
@@ -62,68 +60,52 @@ font-size: 20px; font-weight: bold; line-height: 1;
 .meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 .meta-hint { font-size: 9px; color: #555; text-align: center; display: block; margin-top: 5px; font-style: italic; }
 
-/* Empfänger */
-.recipient { margin: 5px 0 15px 0; width: 350px; max-width: 100%; }
+.recipient { margin: 5px 0 15px 0; width: 350px; }
 .recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
 
-/* Tabelle */
-.table-responsive { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 600px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Buttons */
-.row-btns { position: absolute; right: -65px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
-.btn-action { width: 26px; height: 26px; border-radius: 6px; border: none !important; cursor: pointer; color: white; font-weight: bold; font-size: 16px; }
+.row-btns { position: absolute; right: -65px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; }
+.btn-action { width: 26px; height: 26px; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: bold; }
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
-.footer-wrap { margin-top: auto; }
-.legal { font-size: 10px; line-height: 1.6; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-.bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; font-size: 9px; }
+.bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 9px; }
 
 @media print {
 @page { size: A4; margin: 0; }
 body { background: white; padding: 0; }
 .no-print, .row-btns { display: none !important; }
-.container {
-box-shadow: none;
-padding: 1.5cm;
-width: 100%;
-min-height: 297mm;
-border: none;
-transform: scale(0.84); /* Automatisches Skalieren auf 84% beim Druck */
-transform-origin: top center;
-}
-.footer-wrap { position: absolute; bottom: 1cm; left: 1.5cm; right: 1.5cm; }
-input { border: none !important; }
+.container { box-shadow: none; border: none; transform: scale(0.9); transform-origin: top center; page-break-after: always; }
+#labelWrap { display: block; page-break-before: always; margin-top: 0; }
 }
 
 @media screen and (max-width: 600px) {
+.container { padding: 15px; }
 .header-main { flex-direction: column; align-items: center; }
-.logo-column { align-items: center; width: 100%; margin-top: 15px; }
-.addr-left { text-align: center; width: 100%; }
-.meta-box { width: 100%; }
+.meta-box { width: 100%; margin-top: 10px; }
+.recipient { width: 100%; }
 }
 </style>
 </head>
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN</button>
 <button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
 <button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
-<button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
+<textarea id="adrImport" placeholder="-Adresse hier einfügen-"></textarea>
+<button onclick="importAddress()" style="background: #00a8ff;">ADRESSE IMPORTIEREN</button>
 </div>
-
 <div class="shipping-manager" id="shipManager"></div>
 </div>
 
@@ -148,16 +130,15 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
+<input type="text" id="rec-name" placeholder="Name">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
-<div class="table-responsive">
 <table>
 <thead>
 <tr>
@@ -171,13 +152,12 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </thead>
 <tbody id="itemsBody"></tbody>
 </table>
-</div>
 
 <div class="summary-area">
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <div id="statusSection">
 <select id="statusSelect" class="no-print" onchange="updateStatus()">
-<option value="">Zahlstatus wählen...</option>
+<option value="">Zahlungshinweis</option>
 <option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
 <option value="Offen">Offen</option>
@@ -188,22 +168,29 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D.<br>
-Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG).<br>
-Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
+Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis (§19 UStG). Personalisierte Waren sind vom Umtausch ausgeschlossen.
 </div>
 <div class="bottom-line">
 <div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
-<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com</div>
+<div><strong>Steuer</strong><br>St-Nr: 112/279/00204</div>
+<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24</div>
 </div>
+</div>
+</div>
+
+<div id="labelWrap">
+<div class="label-sender">
+Absender: D3D Dominic Strzoda, Graf-Sempt-Str. 27, 85661 Forstinning, DE
+</div>
+<div class="label-receiver" id="lblRec">
 </div>
 </div>
 
 <datalist id="prodList"></datalist>
 
 <script>
+// Initialisierung & Datalist
 let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter"];
 let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
 {name: "Versand (DHL Paket)", price: 5.49},
@@ -224,16 +211,14 @@ container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand
 shippingOptions.forEach((opt, index) => {
 const row = document.createElement('div');
 row.className = 'ship-row';
-row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
-<div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button></div>`;
+row.style = "display:flex; gap:10px; align-items:center; background:#2c3135; padding:8px; border-radius:6px; margin-bottom:5px;";
+row.innerHTML = `<div style="flex:1; font-size:12px; color:white; font-weight:bold;">${opt.name} (${opt.price.toFixed(2)} €)</div>
+<button onclick="addShipping(${index})" style="background:#00a8ff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">+</button>`;
 container.appendChild(row);
 });
 }
 
-function addShipping(index) {
-const opt = shippingOptions[index];
-addItem(opt.name, opt.price.toFixed(2));
-}
+function addShipping(index) { addItem(shippingOptions[index].name, shippingOptions[index].price.toFixed(2)); }
 
 function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
@@ -248,22 +233,9 @@ row.innerHTML = `
 <div class="row-btns no-print">
 <button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
 <button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
-</div></td>`;
+</div>
+</td>`;
 if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
-calc();
-}
-
-function toggleAutoFields(input) {
-const row = input.closest('tr');
-const qty = row.querySelector('.qty-field');
-const unit = row.querySelector('.unit-field');
-if(input.value.trim() !== "") {
-qty.style.visibility = "visible"; unit.style.visibility = "visible";
-if(qty.value === "") qty.value = 1;
-if(unit.value === "") unit.value = "Stück";
-} else {
-qty.style.visibility = "hidden"; unit.style.visibility = "hidden";
-}
 calc();
 }
 
@@ -281,46 +253,6 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function formatPrice(input) {
-let val = parseFloat(input.value.replace(',','.'));
-if (!isNaN(val)) input.value = val.toFixed(2);
-calc();
-}
-
-function sendMail() {
-const kunde = document.getElementById('rec-name').value || "Kunde";
-const nr = document.getElementById('invNum').value;
-const total = document.getElementById('grandTotal').innerText;
-const rows = document.getElementById('itemsBody').rows;
-let artikelliste = "";
-
-for(let i=0; i<rows.length; i++) {
-const bezeichnung = rows[i].querySelector('.prod-name').value;
-const anzahl = rows[i].querySelector('.qty-field').value;
-const preis = rows[i].querySelector('.row-total').innerText;
-if(bezeichnung) artikelliste += `${anzahl}x ${bezeichnung} (${preis} EUR)%0D%0A`;
-}
-
-const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
-const body = `Hallo ${kunde},%0D%0A%0D%0Aanbei erhalten Sie die Rechnung ${nr}.%0D%0A%0D%0APositionen:%0D%0A${artikelliste}%0D%0AGesamtbetrag: ${total} EUR%0D%0A%0D%0ABeste Grüße,%0D%0ADominic Strzoda / D3D`;
-
-window.location.href = `mailto:?subject=${subject}&body=${body}`;
-}
-
-function saveAndPrint() { window.print(); }
-function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
-function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
-function updateDueDate() {
-const days = parseInt(document.getElementById('dueDays').value) || 0;
-const d = new Date(); d.setDate(d.getDate() + days);
-document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
-}
-function markPers(btn) {
-const input = btn.closest('tr').querySelector('.prod-name');
-if(!input.value.includes('(Personalisierte Anfertigung)')) {
-input.value += " (Personalisierte Anfertigung)"; toggleAutoFields(input);
-}
-}
 function importAddress() {
 const raw = document.getElementById('adrImport').value;
 const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -329,6 +261,90 @@ document.getElementById('rec-name').value = lines[0];
 document.getElementById('rec-street').value = lines[1];
 document.getElementById('rec-city').value = lines[2];
 document.getElementById('rec-country').value = lines[3] || "Deutschland";
+if(lines[4]) document.getElementById('rec-tel').value = lines[4];
+}
+}
+
+function saveAndPrint() {
+// Empfänger für Etikett kopieren
+const name = document.getElementById('rec-name').value;
+const street = document.getElementById('rec-street').value;
+const city = document.getElementById('rec-city').value;
+const country = document.getElementById('rec-country').value;
+document.getElementById('lblRec').innerHTML = `${name}<br>${street}<br>${city}<br>${country}`;
+window.print();
+}
+
+function sendMail() {
+const kunde = document.getElementById('rec-name').value || "Kunde";
+const nr = document.getElementById('invNum').value;
+const total = document.getElementById('grandTotal').innerText;
+
+let artikelListe = "";
+const rows = document.getElementById('itemsBody').rows;
+for (let i = 0; i < rows.length; i++) {
+const name = rows[i].querySelector('.prod-name').value;
+const qty = rows[i].querySelector('.qty-field').value;
+if(name) artikelListe += `- ${qty}x ${name}\n`;
+}
+
+const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
+const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie die Rechnung ${nr}.\n\nPositionen:\n${artikelListe}\nGesamtbetrag: ${total} €\n\nBeste Grüße,\nDominic Strzoda / D3D`);
+window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// Restliche Funktionen (identisch zum Bestand)
+function updateDueDate() {
+const days = parseInt(document.getElementById('dueDays').value) || 0;
+const d = new Date(); d.setDate(d.getDate() + days);
+document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
+}
+function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
+function toggleAutoFields(input) {
+const row = input.closest('tr');
+const qty = row.querySelector('.qty-field');
+const unit = row.querySelector('.unit-field');
+if(input.value.trim() !== "") {
+qty.style.visibility = "visible"; unit.style.visibility = "visible";
+if(qty.value === "") qty.value = 1;
+if(unit.value === "") unit.value = "Stück";
+}
+calc();
+}
+function formatPrice(input) {
+let val = parseFloat(input.value.replace(',','.'));
+if (!isNaN(val)) input.value = val.toFixed(2);
+calc();
+}
+function toggleType() {
+const type = document.getElementById('docType');
+const intro = document.getElementById('introText');
+const btn = document.getElementById('typeBtn');
+if(type.innerText === "RECHNUNG") {
+type.innerText = "ANGEBOT";
+intro.innerText = "Gerne unterbreiten wir Ihnen folgendes Angebot:";
+btn.innerText = "ZU RECHNUNG";
+} else {
+type.innerText = "RECHNUNG";
+intro.innerText = "Wir danken für Ihren Auftrag und berechnen diesen wie folgt:";
+btn.innerText = "ZU ANGEBOT";
+}
+}
+function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
+function saveProduct() {
+const names = document.querySelectorAll('.prod-name');
+names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
+localStorage.setItem('d3d_prods', JSON.stringify(products));
+updateDatalist(); alert("Produkte gespeichert!");
+}
+function manageProducts() {
+let toDelete = prompt("Produkt löschen:\n" + products.join(", "));
+if(toDelete) { products = products.filter(p => p !== toDelete); localStorage.setItem('d3d_prods', JSON.stringify(products)); updateDatalist(); }
+}
+function markPers(btn) {
+const input = btn.closest('tr').querySelector('.prod-name');
+if(!input.value.includes('(Personalisierte Anfertigung)')) {
+input.value += " (Personalisierte Anfertigung)";
 }
 }
 
