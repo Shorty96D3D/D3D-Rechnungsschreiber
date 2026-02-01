@@ -32,7 +32,6 @@ width: 100%; padding: 12px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
 
-/* Tracker Styling */
 .stats-display {
 grid-column: span 3; background: rgba(0, 168, 255, 0.1);
 border: 1px solid var(--accent); padding: 10px; border-radius: 6px;
@@ -101,6 +100,8 @@ body { background: white; padding: 0; margin: 0; }
 .container { box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none; margin: 0; position: relative; overflow: hidden; }
 .footer-wrap { position: absolute; bottom: 1.5cm; left: 1.5cm; right: 1.5cm; margin: 0; }
 input { border: none !important; }
+/* Verstecke Telefon-Feld im Druck, wenn leer */
+#rec-tel:placeholder-shown { display: none !important; }
 }
 
 @media screen and (max-width: 600px) {
@@ -228,7 +229,6 @@ loadStats();
 for(let i=0; i<3; i++) addItem();
 }
 
-// AUTOMATISCHE RECHNUNGSNUMMER
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
@@ -236,43 +236,32 @@ const monthChar = months[now.getMonth()];
 const monthNum = String(now.getMonth() + 1).padStart(2, '0');
 const yearShort = String(now.getFullYear()).slice(-2);
 const prefix = `${monthChar}${monthNum}${yearShort}`;
-
-// Speicher-Key für diesen spezifischen Monat
 const storageKey = `d3d_count_${prefix}`;
 let count = parseInt(localStorage.getItem(storageKey)) || 1;
-
 document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
 }
 
-// EINNAHMEN TRACKER FUNKTIONEN
 function loadStats() {
 const currentMonth = new Date().getMonth() + "_" + new Date().getFullYear();
 const stats = JSON.parse(localStorage.getItem('d3d_stats')) || { month: currentMonth, revenue: 0 };
-
-// Wenn neuer Monat, Tracker für die Anzeige im UI zurücksetzen
 if(stats.month !== currentMonth) {
-stats.month = currentMonth;
-stats.revenue = 0;
+stats.month = currentMonth; stats.revenue = 0;
 localStorage.setItem('d3d_stats', JSON.stringify(stats));
 }
 document.getElementById('monthlyRevenue').innerText = stats.revenue.toFixed(2) + " €";
 }
 
 function saveAndPrint() {
-// Nur bei Rechnungen tracken
 if(document.getElementById('docType').innerText === "RECHNUNG") {
 const total = parseFloat(document.getElementById('grandTotal').innerText);
 const stats = JSON.parse(localStorage.getItem('d3d_stats'));
 stats.revenue += total;
 localStorage.setItem('d3d_stats', JSON.stringify(stats));
-
-// Zähler für Rechnungsnummer erhöhen
 const currentInv = document.getElementById('invNum').value;
 const prefix = currentInv.slice(0, 5);
 const storageKey = `d3d_count_${prefix}`;
 let count = parseInt(localStorage.getItem(storageKey)) || 1;
 localStorage.setItem(storageKey, count + 1);
-
 loadStats();
 }
 window.print();
@@ -287,7 +276,7 @@ loadStats();
 }
 
 function clearForm() {
-if(confirm("Formular wirklich leeren? (Rechnungsnummer bleibt erhalten)")) {
+if(confirm("Formular wirklich leeren?")) {
 document.getElementById('rec-name').value = "";
 document.getElementById('rec-street').value = "";
 document.getElementById('rec-city').value = "";
@@ -302,7 +291,6 @@ calc();
 }
 }
 
-// RESTLICHE LOGIK (UNVERÄNDERT)
 function renderShippingManager() {
 const container = document.getElementById('shipManager');
 container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
@@ -312,6 +300,40 @@ row.className = 'ship-row';
 row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
 container.appendChild(row);
 });
+// WIEDER EINGEBAUT: Balken zum Hinzufügen neuer Optionen
+const addRow = document.createElement('div');
+addRow.className = 'ship-row';
+addRow.style.background = 'rgba(46, 204, 113, 0.1)';
+addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neue Option hinzufügen...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
+container.appendChild(addRow);
+}
+
+function addNewShipping() {
+let name = prompt("Versand-Bezeichnung:");
+let price = prompt("Preis (z.B. 5.49):");
+if(name && price) {
+shippingOptions.push({name: name, price: parseFloat(price.replace(',','.')) || 0});
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function editShipping(index) {
+let name = prompt("Name:", shippingOptions[index].name);
+let price = prompt("Preis:", shippingOptions[index].price);
+if(name && price) {
+shippingOptions[index] = {name: name, price: parseFloat(price.replace(',','.')) || 0};
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function deleteShipping(index) {
+if(confirm("Löschen?")) {
+shippingOptions.splice(index, 1);
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
 }
 
 function addItem(name = "", price = "") {
