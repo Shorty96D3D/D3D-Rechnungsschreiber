@@ -188,7 +188,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
 <div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum"></div>
-<div class="meta-row meta-hide"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
+<div class="meta-row meta-hide"><span>Zahlungsziel (in Tage):</span><input type="number" id="dueDays" value="0" oninput="updateDueDate()"></div>
 <div class="meta-row meta-hide"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 <span class="meta-hint meta-hide">(Rechnungsnummer bei Zahlung bitte angeben)</span>
 </div>
@@ -201,7 +201,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Tel.-Nr. / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -241,8 +241,8 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 </div>
 <div class="bottom-line">
 <div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontakt</strong><br>Email-Adresse: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Kontakt</strong><br>Email: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>Steuer</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
@@ -557,3 +557,4 @@ init();
 </script>
 </body>
 </html>
+
