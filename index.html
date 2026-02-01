@@ -32,25 +32,29 @@ width: 100%; padding: 12px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
 
-/* Archiv Styling */
+/* ARCHIV STYLING - JETZT KOMPAKTER */
 .archive-area {
 grid-column: span 3; background: #2c3135; padding: 15px; border-radius: 6px;
 margin-top: 10px; border: 1px dashed var(--accent);
 }
-.archive-list { max-height: 150px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
-.archive-item {
-display: flex; justify-content: space-between; align-items: center; padding: 5px 8px;
-border-bottom: 1px solid #444; cursor: pointer; transition: 0.2s;
-}
-.archive-item:hover { background: rgba(0, 168, 255, 0.2); }
-.archive-info { flex: 1; display: flex; justify-content: space-between; margin-right: 15px; }
+.archive-list { max-height: 180px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
 
-/* Kompakter Roter X-Button für Archiv (angepasst an Versand-Stil) */
+.archive-item {
+display: flex; justify-content: space-between; align-items: center; padding: 6px 10px;
+border-bottom: 1px solid #444; transition: 0.2s; gap: 10px;
+}
+.archive-item:hover { background: rgba(0, 168, 255, 0.1); }
+
+.archive-info {
+flex: 1; display: flex; justify-content: space-between; cursor: pointer;
+}
+
+/* Kleiner Roter X-Button (Analog zu Versand-Buttons) */
 .btn-del-arch {
 width: 24px; height: 24px; background: #ff4757; color: white; border: none;
 border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;
 display: flex; align-items: center; justify-content: center; transition: 0.2s;
-flex-shrink: 0;
+flex-shrink: 0; padding: 0;
 }
 .btn-del-arch:hover { background: #ff6b81; transform: scale(1.1); }
 
@@ -317,7 +321,7 @@ item.innerHTML = `
 <span><strong>${doc.invNum}</strong> - ${doc.name}</span>
 <span>${doc.total} €</span>
 </div>
-<button class="btn-del-arch" onclick="deleteFromArchive(event, ${doc.id})">✕</button>
+<button class="btn-del-arch" title="Löschen" onclick="deleteFromArchive(event, ${doc.id})">✕</button>
 `;
 list.appendChild(item);
 });
@@ -382,11 +386,7 @@ alert(count + " Produkte/Preise gespeichert!");
 function updateDatalist() {
 const dl = document.getElementById('prodList');
 const delSelect = document.getElementById('prodDeleteSelect');
-
-// Datalist für Autocomplete
 dl.innerHTML = products.map(p => `<option value="${p.name}">`).join('');
-
-// Dropdown für Löschen aktualisieren
 delSelect.innerHTML = '<option value="">Wähle Produkt zum Löschen...</option>' +
 products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
 }
@@ -395,7 +395,6 @@ function deleteProductFromSelect() {
 const sel = document.getElementById('prodDeleteSelect');
 const val = sel.value;
 if(!val) { alert("Bitte erst ein Produkt im Dropdown auswählen!"); return; }
-
 if(confirm(`"${val}" wirklich löschen?`)) {
 products = products.filter(p => p.name !== val);
 localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
@@ -416,7 +415,6 @@ toggleAutoFields(input);
 }
 }
 
-// ADRESSE IMPORT
 function importAddress() {
 const raw = document.getElementById('adrImport').value;
 const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -433,7 +431,6 @@ if(lines[4]) document.getElementById('rec-tel').value = lines[4];
 }
 }
 
-// VERSAND MANAGER FUNKTIONEN
 function renderShippingManager() {
 const container = document.getElementById('shipManager');
 container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
@@ -480,7 +477,6 @@ renderShippingManager();
 
 function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
 
-// CORE FUNKTIONEN
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
