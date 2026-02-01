@@ -22,7 +22,6 @@ padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
 box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
-/* Toolbar - Symmetrische 3er Gliederung */
 .no-print {
 display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
@@ -31,6 +30,14 @@ padding: 15px; border-radius: 10px;
 .no-print button {
 width: 100%; padding: 12px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
+}
+
+/* Tracker Styling */
+.stats-display {
+grid-column: span 3; background: rgba(0, 168, 255, 0.1);
+border: 1px solid var(--accent); padding: 10px; border-radius: 6px;
+display: flex; justify-content: space-between; align-items: center;
+font-size: 13px; font-weight: bold; color: var(--accent);
 }
 
 .import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
@@ -44,14 +51,12 @@ display: flex; flex-direction: column; gap: 8px;
 .ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
 .ship-btns { display: flex; gap: 8px; }
 
-/* Button Symmetrie Fix */
 .btn-s {
 width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
 font-size: 18px; font-weight: bold; line-height: 0; padding: 0;
 }
 
-/* Header & Meta Box Handy Fix */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
 .title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
@@ -72,7 +77,6 @@ th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px;
 td { border: 1px solid #000; padding: 4px; position: relative; }
 .table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-/* Zeilen Buttons Symmetrie */
 .row-btns { position: absolute; right: -75px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
 .btn-action {
 width: 28px; height: 28px; border-radius: 6px; border: none !important;
@@ -94,43 +98,39 @@ color: white; font-weight: bold; font-size: 16px; line-height: 0; padding: 0;
 @page { size: A4; margin: 0; }
 body { background: white; padding: 0; margin: 0; }
 .no-print, .row-btns { display: none !important; }
-.container {
-box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none;
-margin: 0; position: relative; overflow: hidden;
-}
-.footer-wrap {
-position: absolute;
-bottom: 1.5cm;
-left: 1.5cm;
-right: 1.5cm;
-margin: 0;
-}
+.container { box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none; margin: 0; position: relative; overflow: hidden; }
+.footer-wrap { position: absolute; bottom: 1.5cm; left: 1.5cm; right: 1.5cm; margin: 0; }
 input { border: none !important; }
 }
 
-/* Handy Ansicht Fix */
 @media screen and (max-width: 600px) {
 .header-main { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .logo-column { align-items: center; width: 100%; margin-top: 10px; }
 .addr-left { min-width: 100%; margin-bottom: 10px; }
 .meta-box { width: 100%; }
 .no-print { grid-template-columns: 1fr 1fr; }
-.import-area, .shipping-manager { grid-column: span 2; }
+.import-area, .shipping-manager, .stats-display { grid-column: span 2; }
 }
 </style>
 </head>
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
-<button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
+<div class="stats-display">
+<span>Einnahmen Tracker (Diesen Monat):</span>
+<span id="monthlyRevenue">0.00 €</span>
+<button onclick="resetStats()" style="width:auto; padding:5px 10px; background:#c0392b; font-size:9px;">RESET</button>
+</div>
+
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN/SPEICHERN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
 <button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
-<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
+<button onclick="clearForm()" style="background: #7f8c8d;">♻️ FORMULAR LEEREN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
+<textarea id="adrImport" placeholder="...Adresse importieren..."></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
@@ -148,8 +148,8 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="logo-text"><span>D</span>3D</div>
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
-<div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
-<div class="meta-row meta-hide"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
+<div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum"></div>
+<div class="meta-row meta-hide"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
 <div class="meta-row meta-hide"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 <span class="meta-hint meta-hide">(Rechnungsnummer bei Zahlung bitte angeben)</span>
 </div>
@@ -158,11 +158,11 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Vorname Nachname">
+<input type="text" id="rec-name" placeholder="Name">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr. / eBay Name">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -201,8 +201,8 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
+<div><strong>Kontakt</strong><br>Email-Adresse: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
 <div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
@@ -220,63 +220,99 @@ let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
 
 function init() {
 document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
+generateInvoiceNumber();
 updateDueDate();
 updateDatalist();
 renderShippingManager();
+loadStats();
 for(let i=0; i<3; i++) addItem();
 }
 
+// AUTOMATISCHE RECHNUNGSNUMMER
+function generateInvoiceNumber() {
+const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+const now = new Date();
+const monthChar = months[now.getMonth()];
+const monthNum = String(now.getMonth() + 1).padStart(2, '0');
+const yearShort = String(now.getFullYear()).slice(-2);
+const prefix = `${monthChar}${monthNum}${yearShort}`;
+
+// Speicher-Key für diesen spezifischen Monat
+const storageKey = `d3d_count_${prefix}`;
+let count = parseInt(localStorage.getItem(storageKey)) || 1;
+
+document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
+}
+
+// EINNAHMEN TRACKER FUNKTIONEN
+function loadStats() {
+const currentMonth = new Date().getMonth() + "_" + new Date().getFullYear();
+const stats = JSON.parse(localStorage.getItem('d3d_stats')) || { month: currentMonth, revenue: 0 };
+
+// Wenn neuer Monat, Tracker für die Anzeige im UI zurücksetzen
+if(stats.month !== currentMonth) {
+stats.month = currentMonth;
+stats.revenue = 0;
+localStorage.setItem('d3d_stats', JSON.stringify(stats));
+}
+document.getElementById('monthlyRevenue').innerText = stats.revenue.toFixed(2) + " €";
+}
+
+function saveAndPrint() {
+// Nur bei Rechnungen tracken
+if(document.getElementById('docType').innerText === "RECHNUNG") {
+const total = parseFloat(document.getElementById('grandTotal').innerText);
+const stats = JSON.parse(localStorage.getItem('d3d_stats'));
+stats.revenue += total;
+localStorage.setItem('d3d_stats', JSON.stringify(stats));
+
+// Zähler für Rechnungsnummer erhöhen
+const currentInv = document.getElementById('invNum').value;
+const prefix = currentInv.slice(0, 5);
+const storageKey = `d3d_count_${prefix}`;
+let count = parseInt(localStorage.getItem(storageKey)) || 1;
+localStorage.setItem(storageKey, count + 1);
+
+loadStats();
+}
+window.print();
+}
+
+function resetStats() {
+if(confirm("Umsatz-Tracker für diesen Monat wirklich auf 0 setzen?")) {
+const currentMonth = new Date().getMonth() + "_" + new Date().getFullYear();
+localStorage.setItem('d3d_stats', JSON.stringify({ month: currentMonth, revenue: 0 }));
+loadStats();
+}
+}
+
+function clearForm() {
+if(confirm("Formular wirklich leeren? (Rechnungsnummer bleibt erhalten)")) {
+document.getElementById('rec-name').value = "";
+document.getElementById('rec-street').value = "";
+document.getElementById('rec-city').value = "";
+document.getElementById('rec-country').value = "";
+document.getElementById('rec-tel').value = "";
+document.getElementById('itemsBody').innerHTML = "";
+document.getElementById('statusLabel').innerText = "";
+document.getElementById('statusSelect').value = "";
+generateInvoiceNumber();
+for(let i=0; i<3; i++) addItem();
+calc();
+}
+}
+
+// RESTLICHE LOGIK (UNVERÄNDERT)
 function renderShippingManager() {
 const container = document.getElementById('shipManager');
 container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
 shippingOptions.forEach((opt, index) => {
 const row = document.createElement('div');
 row.className = 'ship-row';
-row.innerHTML = `
-<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div>
-<div class="ship-btns">
-<button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button>
-<button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button>
-<button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button>
-</div>`;
+row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
 container.appendChild(row);
 });
-const addRow = document.createElement('div');
-addRow.className = 'ship-row';
-addRow.style.background = 'rgba(46, 204, 113, 0.1)';
-addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neu...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
-container.appendChild(addRow);
 }
-
-function addNewShipping() {
-let name = prompt("Name:");
-let price = prompt("Preis:");
-if(name && price) {
-shippingOptions.push({name: name, price: parseFloat(price.replace(',','.')) || 0});
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function editShipping(index) {
-let name = prompt("Name:", shippingOptions[index].name);
-let price = prompt("Preis:", shippingOptions[index].price);
-if(name && price) {
-shippingOptions[index] = {name: name, price: parseFloat(price.replace(',','.')) || 0};
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function deleteShipping(index) {
-if(confirm("Löschen?")) {
-shippingOptions.splice(index, 1);
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function addShipping(index) { addItem(shippingOptions[index].name, shippingOptions[index].price.toFixed(2)); }
 
 function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
@@ -287,11 +323,7 @@ row.innerHTML = `
 <td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
 <td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
 <td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
-<td style="font-weight:bold"><span class="row-total"></span>
-<div class="row-btns no-print">
-<button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
-<button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
-</div></td>`;
+<td style="font-weight:bold"><span class="row-total"></span><div class="row-btns no-print"><button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button><button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button></div></td>`;
 if(name !== "") toggleAutoFields(row.querySelector('.prod-name'));
 calc();
 }
@@ -304,9 +336,7 @@ if(input.value.trim() !== "") {
 qty.style.visibility = "visible"; unit.style.visibility = "visible";
 if(qty.value === "") qty.value = 1;
 if(unit.value === "") unit.value = "Stück";
-} else {
-qty.style.visibility = "hidden"; unit.style.visibility = "hidden";
-}
+} else { qty.style.visibility = "hidden"; unit.style.visibility = "hidden"; }
 calc();
 }
 
@@ -330,15 +360,6 @@ if (!isNaN(val)) input.value = val.toFixed(2);
 calc();
 }
 
-function sendMail() {
-const kunde = document.getElementById('rec-name').value || "Kunde";
-const nr = document.getElementById('invNum').value;
-const subject = encodeURIComponent(`${document.getElementById('docType').innerText} ${nr} - D3D`);
-const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie das gewünschte ${document.getElementById('docType').innerText.toLowerCase()}.\n\nBeste Grüße,\nDominic Strzoda / D3D`);
-window.location.href = `mailto:?subject=${subject}&body=${body}`;
-}
-
-function saveAndPrint() { window.print(); }
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
 function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
 function updateDueDate() {
@@ -368,19 +389,12 @@ const type = document.getElementById('docType');
 const btn = document.getElementById('typeBtn');
 const statusSection = document.getElementById('statusSection');
 const metaHides = document.querySelectorAll('.meta-hide');
-
 if(type.innerText === "RECHNUNG") {
-// Wechsel zu ANGEBOT
-type.innerText = "ANGEBOT";
-btn.innerText = "ZU RECHNUNG";
-statusSection.style.display = "none";
-metaHides.forEach(el => el.style.display = "none");
+type.innerText = "ANGEBOT"; btn.innerText = "ZU RECHNUNG";
+statusSection.style.display = "none"; metaHides.forEach(el => el.style.display = "none");
 } else {
-// Wechsel zu RECHNUNG
-type.innerText = "RECHNUNG";
-btn.innerText = "ZU ANGEBOT";
-statusSection.style.display = "block";
-metaHides.forEach(el => el.style.display = "flex");
+type.innerText = "RECHNUNG"; btn.innerText = "ZU ANGEBOT";
+statusSection.style.display = "block"; metaHides.forEach(el => el.style.display = "flex");
 }
 }
 
@@ -394,9 +408,8 @@ function manageProducts() {
 let toDelete = prompt("Löschen:\n" + products.join(", "));
 if(toDelete) { products = products.filter(p => p !== toDelete); localStorage.setItem('d3d_prods', JSON.stringify(products)); updateDatalist(); }
 }
-
+function addShipping(index) { addItem(shippingOptions[index].name, shippingOptions[index].price.toFixed(2)); }
 init();
 </script>
 </body>
 </html>
-
