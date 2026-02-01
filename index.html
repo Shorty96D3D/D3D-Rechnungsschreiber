@@ -487,19 +487,37 @@ document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, 
 }
 
 function saveAndPrint() {
+// 1. Archivierung und Statistik wie bisher
 archiveCurrent();
-if(document.getElementById('docType').innerText === "RECHNUNG") {
+const type = document.getElementById('docType').innerText;
+const invNum = document.getElementById('invNum').value;
+const name = document.getElementById('rec-name').value || "Unbekannt";
+
+if(type === "RECHNUNG") {
 const total = parseFloat(document.getElementById('grandTotal').innerText);
 const stats = JSON.parse(localStorage.getItem('d3d_stats')) || {revenue:0};
 stats.revenue += total;
 localStorage.setItem('d3d_stats', JSON.stringify(stats));
-const prefix = document.getElementById('invNum').value.slice(0, 5);
+const prefix = invNum.slice(0, 5);
 const storageKey = `d3d_count_${prefix}`;
 localStorage.setItem(storageKey, (parseInt(localStorage.getItem(storageKey)) || 1) + 1);
 loadStats();
 }
+
+// 2. Dynamische Benennung
+const defaultName = `${type}_${invNum}_${name.replace(/\s+/g, '_')}`;
+const customName = prompt("Dateiname für PDF angeben:", defaultName);
+
+if (customName !== null) {
+const originalTitle = document.title;
+document.title = customName; // Ändert den Titel kurzzeitig für das System
 window.print();
+
+// Nach dem Drucken Titel zurücksetzen (nach einer kurzen Verzögerung)
+setTimeout(() => { document.title = originalTitle; }, 1000);
 }
+}
+
 
 function addItem(name = "", price = "") {
 const body = document.getElementById('itemsBody');
@@ -557,4 +575,5 @@ init();
 </script>
 </body>
 </html>
+
 
