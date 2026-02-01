@@ -11,11 +11,6 @@
 --accent: #00a8ff;
 --text-main: #e0e0e0;
 --doc-white: #ffffff;
---btn-green: #27ae60;
---btn-purple: #8e44ad;
---btn-orange: #f39c12;
---btn-red: #c0392b;
---btn-grey: #7f8c8d;
 }
 
 * { box-sizing: border-box; }
@@ -27,162 +22,106 @@ padding: 30px 45px; min-height: 297mm; display: flex; flex-direction: column;
 box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
 
-/* UI DASHBOARD - MODERN GRID */
 .no-print {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 10px;
-max-width: 900px;
-margin: 0 auto 15px auto;
-background: var(--ui-card);
-padding: 15px;
-border-radius: 10px;
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+max-width: 900px; margin: 0 auto 15px auto; background: var(--ui-card);
+padding: 15px; border-radius: 10px;
 }
-
-/* Stats immer über die ganze Breite */
-.stats-display {
-grid-column: span 2;
-background: rgba(0, 168, 255, 0.1);
-border: 1px solid var(--accent);
-padding: 12px;
-border-radius: 6px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 14px;
-font-weight: bold;
-color: var(--accent);
-}
-
 .no-print button {
-width: 100%;
-height: 50px; /* Einheitliche Höhe */
-border-radius: 6px;
-border: none;
-cursor: pointer;
-font-weight: bold;
-color: white;
-font-size: 11px;
-transition: 0.2s;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-padding: 5px;
+width: 100%; padding: 12px; border-radius: 6px; border: none;
+cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
 
-/* Spezielle Anordnung für die Buttons */
-.btn-full { grid-column: span 2; }
-
-/* Lösch-Sektion Styling */
-.delete-section {
-grid-column: span 2;
-display: flex;
-gap: 2px;
-height: 50px;
-}
-#prodDeleteSelect {
-flex: 1;
-background: var(--btn-red);
-color: white;
-border: none;
-border-radius: 6px 0 0 6px;
-padding: 0 10px;
-font-weight: bold;
-font-size: 11px;
-}
-.btn-del-icon {
-width: 50px !important;
-background: #a93226 !important;
-border-radius: 0 6px 6px 0 !important;
-font-size: 18px !important;
+/* FIX FÜR HANDY BUTTONS: Damit sie nicht verschoben sind */
+@media screen and (max-width: 600px) {
+.no-print { grid-template-columns: 1fr !important; }
+.import-area, .shipping-manager, .stats-display, .archive-area { grid-column: span 1 !important; }
 }
 
-/* IMPORT & VERSAND */
-.import-area {
-grid-column: span 2;
-display: flex;
-flex-direction: column;
-gap: 8px;
-background: rgba(255,255,255,0.05);
-padding: 10px;
-border-radius: 6px;
+.archive-area {
+grid-column: span 3; background: #2c3135; padding: 15px; border-radius: 6px;
+margin-top: 10px; border: 1px dashed var(--accent);
 }
-.import-area textarea {
-width: 100%; height: 60px; background: #2c3135; color: white; border: 1px solid #444;
-padding: 8px; border-radius: 4px; font-size: 12px; resize: none;
+.archive-list { max-height: 180px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
+
+.archive-item {
+display: flex; justify-content: space-between; align-items: center; padding: 6px 10px;
+border-bottom: 1px solid #444; transition: 0.2s; gap: 10px;
 }
+.archive-item:hover { background: rgba(0, 168, 255, 0.1); }
+
+.archive-info {
+flex: 1; display: flex; justify-content: space-between; cursor: pointer;
+}
+
+.btn-del-arch {
+width: 24px; height: 24px; background: #ff4757; color: white; border: none;
+border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;
+display: flex; align-items: center; justify-content: center; transition: 0.2s;
+flex-shrink: 0; padding: 0;
+}
+
+#archiveSearch { width: 100%; padding: 8px; border-radius: 4px; border: none; margin-bottom: 5px; background: #1c1f22; color: white; }
+
+.stats-display {
+grid-column: span 3; background: rgba(0, 168, 255, 0.1);
+border: 1px solid var(--accent); padding: 10px; border-radius: 6px;
+display: flex; justify-content: space-between; align-items: center;
+font-size: 13px; font-weight: bold; color: var(--accent);
+}
+
+.import-area { grid-column: span 3; display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; }
+.import-area textarea { flex: 1; height: 50px; background: #2c3135; color: white; border: none; padding: 8px; border-radius: 4px; font-size: 11px; resize: none; }
 
 .shipping-manager {
-grid-column: span 2; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;
+grid-column: span 3; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px;
 display: flex; flex-direction: column; gap: 8px;
 }
-.ship-row { display: flex; gap: 8px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
-.ship-info { flex: 1; font-size: 12px; color: white; }
-.ship-btns { display: flex; gap: 5px; }
+.ship-row { display: flex; gap: 10px; align-items: center; background: #2c3135; padding: 8px; border-radius: 6px; }
+.ship-info { flex: 1; font-size: 12px; color: white; font-weight: bold; }
+.ship-btns { display: flex; gap: 8px; }
 
 .btn-s {
-width: 32px; height: 32px; border-radius: 4px; border: none; cursor: pointer;
+width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer;
 color: white; display: flex; align-items: center; justify-content: center;
-font-size: 16px; font-weight: bold;
+font-size: 18px; font-weight: bold; line-height: 0; padding: 0;
 }
 
-/* ARCHIV */
-.archive-area {
-grid-column: span 2; background: #1c1f22; padding: 15px; border-radius: 6px;
-margin-top: 5px; border: 1px dashed var(--accent);
-}
-.archive-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
-.archive-item {
-display: flex; justify-content: space-between; align-items: center; padding: 8px;
-border-bottom: 1px solid #333; font-size: 12px;
-}
-.btn-del-arch {
-width: 28px; height: 28px; background: #ff4757; color: white; border: none; border-radius: 4px; cursor: pointer;
-}
-
-/* RECHNUNGS-DESIGN (A4) */
 .header-main { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; align-items: start; }
 .addr-left { font-size: 11px; line-height: 1.2; padding-top: 15px; }
-.title-center { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
+.title-center { text-align: center; font-size: 26px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 15px; }
 .logo-column { display: flex; flex-direction: column; align-items: flex-end; }
-.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; }
+.logo-text { font-size: 42px; font-weight: bold; letter-spacing: -2px; text-align: center; }
 .logo-text span { transform: scaleX(-1); display: inline-block; }
 
-.meta-box { background: #f0f0f0; padding: 10px; border-radius: 4px; width: 250px; font-size: 11px; border: 1px solid #ddd; }
+.meta-box { background: #f0f0f0 !important; padding: 10px; border-radius: 4px; width: 260px; font-size: 11px; border: 1px solid #ddd; }
 .meta-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
-.meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; font-size: 11px; }
+.meta-row input { background: transparent; border: none; text-align: right; width: 110px; font-weight: bold; color: black; font-size: 11px; }
 
-.recipient { margin: 10px 0 20px 0; width: 350px; }
-.recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; background: transparent; outline: none; }
+.recipient { margin: 5px 0 15px 0; width: 350px; }
+.recipient input { display: block; width: 100%; border: none; padding: 2px 0; font-size: 13px; color: black; background: transparent; outline: none; }
 
 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 th { border: 1px solid #000; padding: 6px; background: #f2f2f2; font-size: 12px; text-align: left; }
-td { border: 1px solid #000; padding: 6px; position: relative; }
-.table-input { width: 100%; border: none; font-size: 12px; background: transparent; outline: none; }
+td { border: 1px solid #000; padding: 4px; position: relative; }
+.table-input { width: 100%; border: none; font-size: 12px; background: transparent; color: black; outline: none; }
 
-.row-btns { position: absolute; right: -70px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
-.btn-action { width: 26px; height: 26px; border-radius: 4px; border: none; cursor: pointer; color: white; font-weight: bold; }
+.row-btns { position: absolute; right: -75px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; border: none !important; background: transparent !important; }
+.btn-action {
+width: 28px; height: 28px; border-radius: 6px; border: none !important;
+cursor: pointer; display: flex; align-items: center; justify-content: center;
+color: white; font-weight: bold; font-size: 16px; line-height: 0; padding: 0;
+}
 
 .summary-area { text-align: right; margin: 10px 0; display: flex; flex-direction: column; align-items: flex-end; }
 .total-box { font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding: 2px 5px; }
 
-.footer-wrap { margin-top: auto; }
-.legal { font-size: 9px; line-height: 1.5; color: #333; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-.bottom-line { border-top: 1.5px solid #000; padding-top: 10px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.1fr; gap: 10px; font-size: 8.5px; }
-
-/* DESKTOP OPTIMIERUNG */
-@media screen and (min-width: 600px) {
-.no-print { grid-template-columns: repeat(3, 1fr); }
-.stats-display, .btn-full, .delete-section, .import-area, .shipping-manager, .archive-area { grid-column: span 3; }
-.import-area { flex-direction: row; }
-.import-area button { width: 200px; }
-}
-
 @media print {
+@page { size: A4; margin: 0; }
+body { background: white; padding: 0; margin: 0; }
 .no-print, .row-btns { display: none !important; }
-body { background: white; padding: 0; }
-.container { box-shadow: none; width: 210mm; height: 297mm; padding: 1.5cm; }
+.container { box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none; margin: 0; position: relative; }
+.footer-wrap { position: absolute; bottom: 1.5cm; left: 1.5cm; right: 1.5cm; }
 }
 </style>
 </head>
@@ -192,32 +131,31 @@ body { background: white; padding: 0; }
 <div class="stats-display">
 <span>Einnahmen (Diesen Monat):</span>
 <span id="monthlyRevenue">0.00 €</span>
-<button onclick="resetStats()" style="width:60px; height:25px; background:#c0392b; font-size:9px;">RESET</button>
+<button onclick="resetStats()" style="width:auto; padding:5px 10px; background:#c0392b; font-size:9px;">RESET</button>
 </div>
 
-<button onclick="saveAndPrint()" style="background: var(--btn-green);" class="btn-full">🖨️ DRUCKEN & ARCHIVIEREN</button>
-<button onclick="toggleType()" id="typeBtn" style="background: var(--btn-purple);">ZU ANGEBOT</button>
-<button onclick="addItem()" style="background: var(--btn-green);">+ POSITION</button>
-<button onclick="saveProduct()" style="background: var(--btn-orange);">💾 PRODUKT SPEICHERN</button>
-<button onclick="clearForm()" style="background: var(--btn-grey);">♻️ LEEREN</button>
-
-<div class="delete-section">
-<select id="prodDeleteSelect">
-<option value="">Produkt löschen...</option>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & ARCHIVIEREN</button>
+<button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
+<button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
+<div style="display:flex; gap:2px;">
+<select id="prodDeleteSelect" style="flex:1; background:#c0392b; color:white; border:none; border-radius:6px 0 0 6px; padding:12px; font-weight:bold; font-size:11px; cursor:pointer;">
+<option value="">Wähle Produkt zum Löschen...</option>
 </select>
-<button class="btn-del-icon" onclick="deleteProductFromSelect()">🗑️</button>
+<button onclick="deleteProductFromSelect()" style="width:40px; background:#c0392b; border-radius:0 6px 6px 0; font-size:14px;">🗑️</button>
 </div>
+<button onclick="clearForm()" style="background: #7f8c8d;">♻️ FORMULAR LEEREN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="eBay Adresse hier einfügen..."></textarea>
-<button onclick="importAddress()" style="background: #00a8ff;">ADRESSE IMPORTIEREN</button>
+<textarea id="adrImport" placeholder="Adresse importieren..."></textarea>
+<button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">IMPORT</button>
 </div>
 
 <div class="shipping-manager" id="shipManager"></div>
 
 <div class="archive-area">
-<strong style="color:var(--accent); font-size:12px;">Rechnungs-Archiv</strong>
-<input type="text" id="archiveSearch" placeholder="Suche..." oninput="renderArchive()" style="width:100%; margin-top:5px; padding:5px; background:#2c3135; border:none; color:white; border-radius:4px;">
+<h4 style="margin:0 0 10px 0; color:var(--accent)">Rechnungs-Archiv</h4>
+<input type="text" id="archiveSearch" placeholder="Suche..." oninput="renderArchive()">
 <div class="archive-list" id="archiveList"></div>
 </div>
 </div>
@@ -225,7 +163,7 @@ body { background: white; padding: 0; }
 <div class="container" id="invoiceWrap">
 <div class="header-main">
 <div class="addr-left">
-<strong>D3D</strong><br>
+<h2>D3D</h2>
 Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 </div>
 <div class="title-center" id="docType">Rechnung</div>
@@ -234,7 +172,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
 <div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum"></div>
-<div class="meta-row meta-hide"><span>Zahlungsziel:</span><input type="number" id="dueDays" value="0" oninput="updateDueDate()"></div>
+<div class="meta-row meta-hide"><span>Zahlungsziel (Tage):</span><input type="number" id="dueDays" value="0" oninput="updateDueDate()"></div>
 <div class="meta-row meta-hide"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
 </div>
 </div>
@@ -243,21 +181,19 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="recipient">
 <strong>Empfänger:</strong>
 <input type="text" id="rec-name" placeholder="Name">
-<input type="text" id="rec-street" placeholder="Straße Hausnummer">
+<input type="text" id="rec-street" placeholder="Straße">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
+<input type="text" id="rec-tel" placeholder="Tel / eBay">
 </div>
-
-<p style="font-size: 12px; margin-bottom: 10px;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
 
 <table>
 <thead>
 <tr>
 <th style="width:5%">Pos.</th>
-<th>Bezeichnung</th>
-<th style="width:10%">Anzahl</th>
-<th style="width:10%">Einheit</th>
+<th style="width:45%">Bezeichnung</th>
+<th style="width:10%">Anz.</th>
+<th style="width:10%">Einh.</th>
 <th style="width:15%">Preis (€)</th>
 <th style="width:15%">Gesamt (€)</th>
 </tr>
@@ -268,10 +204,9 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="summary-area">
 <div class="total-box">Gesamtbetrag: <span id="grandTotal">0.00</span> €</div>
 <div id="statusSection">
-<select id="statusSelect" class="no-print" onchange="updateStatus()" style="margin-top:10px;">
-<option value="">Zahlstatus wählen...</option>
+<select id="statusSelect" class="no-print" onchange="updateStatus()">
+<option value="">Zahlstatus...</option>
 <option value="Betrag dankend erhalten">Betrag dankend erhalten</option>
-<option value="Betrag in bar erhalten">Betrag in bar erhalten</option>
 <option value="Offen">Offen</option>
 </select>
 <div id="statusLabel" style="font-weight:bold; margin-top:5px;"></div>
@@ -280,13 +215,13 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 
 <div class="footer-wrap">
 <div class="legal">
-Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 UStG). Personalisierte Waren sind vom Umtausch ausgeschlossen.
+Die Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Kein Steuerausweis gemäß Kleinunternehmerregelung (§ 19 UStG).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
-<div><strong>Kontakt</strong><br>Email: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359</div>
-<div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
+<div><strong>D3D</strong><br>D. Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com</div>
+<div><strong>Steuer</strong><br>112/279/00204</div>
+<div><strong>Bank</strong><br>DE65 1001 1001 2856 6428 24</div>
 </div>
 </div>
 </div>
@@ -296,10 +231,7 @@ Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von D3D. Ke
 <script>
 let products = JSON.parse(localStorage.getItem('d3d_prods_v2')) || [];
 let archive = JSON.parse(localStorage.getItem('d3d_archive')) || [];
-let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
-{name: "Verpackung+Versand", price: 2.00},
-{name: "DHL Päckchen M", price: 5.19}
-];
+let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [{name: "Versand", price: 5.49}];
 
 function init() {
 document.getElementById('date').value = new Date().toLocaleDateString('de-DE');
@@ -312,13 +244,34 @@ loadStats();
 for(let i=0; i<3; i++) addItem();
 }
 
-function generateInvoiceNumber() {
-const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-const now = new Date();
-const prefix = `${months[now.getMonth()]}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
-const storageKey = `d3d_count_${prefix}`;
-let count = parseInt(localStorage.getItem(storageKey)) || 1;
-document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
+function saveAndPrint() {
+const type = document.getElementById('docType').innerText;
+const total = parseFloat(document.getElementById('grandTotal').innerText);
+
+// 1. Archivieren
+archiveCurrent();
+
+// 2. Statistik sofort updaten (NUR BEI RECHNUNG)
+if(type === "RECHNUNG") {
+const m = new Date().getMonth() + "_" + new Date().getFullYear();
+let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0};
+s.revenue += total;
+localStorage.setItem('d3d_stats', JSON.stringify(s));
+
+// Zähler Rechnungsnummer
+const invNum = document.getElementById('invNum').value;
+const prefix = invNum.slice(0, 5);
+localStorage.setItem(`d3d_count_${prefix}`, (parseInt(localStorage.getItem(`d3d_count_${prefix}`)) || 1) + 1);
+
+loadStats(); // Tracker oben sofort aktualisieren
+}
+
+// 3. Drucken
+const name = document.getElementById('rec-name').value || "Unbekannt";
+const oldTitle = document.title;
+document.title = `${type}_${document.getElementById('invNum').value}_${name}`;
+window.print();
+setTimeout(() => { document.title = oldTitle; }, 1000);
 }
 
 function addItem(name = "", price = "") {
@@ -330,12 +283,7 @@ row.innerHTML = `
 <td><input type="number" class="table-input qty-field" value="${name?1:''}" oninput="calc()"></td>
 <td><input class="table-input unit-field" value="${name?'Stück':''}"></td>
 <td><input type="number" class="table-input price-field" value="${price}" step="0.01" oninput="calc()"></td>
-<td style="font-weight:bold"><span class="row-total"></span>
-<div class="row-btns no-print">
-<button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button>
-<button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button>
-</div>
-</td>`;
+<td style="font-weight:bold"><span class="row-total"></span><div class="row-btns no-print"><button class="btn-action" style="background:#2ecc71" onclick="markPers(this)">✓</button><button class="btn-action" style="background:#ff4757" onclick="this.closest('tr').remove(); calc();">✕</button></div></td>`;
 calc();
 }
 
@@ -363,38 +311,6 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function saveAndPrint() {
-const type = document.getElementById('docType').innerText;
-const total = parseFloat(document.getElementById('grandTotal').innerText);
-
-// 1. Archivierung
-archiveCurrent();
-
-// 2. Statistik & Rechnungsnummer (NUR BEI RECHNUNG)
-if(type === "RECHNUNG") {
-// Stats aktualisieren
-const m = new Date().getMonth() + "_" + new Date().getFullYear();
-let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0};
-s.revenue += total;
-localStorage.setItem('d3d_stats', JSON.stringify(s));
-
-// Zähler für Rechnungsnummer hochsetzen
-const invNum = document.getElementById('invNum').value;
-const prefix = invNum.slice(0, 5);
-localStorage.setItem(`d3d_count_${prefix}`, (parseInt(localStorage.getItem(`d3d_count_${prefix}`)) || 1) + 1);
-
-loadStats(); // UI sofort aktualisieren
-}
-
-// 3. Drucken
-const name = document.getElementById('rec-name').value || "Unbekannt";
-const filename = `${type}_${document.getElementById('invNum').value}_${name.replace(/\s+/g, '_')}`;
-const oldTitle = document.title;
-document.title = filename;
-window.print();
-setTimeout(() => { document.title = oldTitle; }, 1000);
-}
-
 function archiveCurrent() {
 const doc = {
 id: Date.now(),
@@ -405,24 +321,24 @@ total: document.getElementById('grandTotal').innerText,
 date: document.getElementById('date').value
 };
 archive.unshift(doc);
-if(archive.length > 100) archive.pop();
+if(archive.length > 200) archive.pop();
 localStorage.setItem('d3d_archive', JSON.stringify(archive));
 renderArchive();
 }
 
 function renderArchive() {
 const list = document.getElementById('archiveList');
-const query = document.getElementById('archiveSearch').value.toLowerCase();
+const search = document.getElementById('archiveSearch').value.toLowerCase();
 list.innerHTML = "";
-archive.filter(d => d.name.toLowerCase().includes(query) || d.invNum.toLowerCase().includes(query)).forEach(doc => {
+archive.filter(d => d.name.toLowerCase().includes(search) || d.invNum.toLowerCase().includes(search)).forEach(doc => {
 const item = document.createElement('div');
 item.className = 'archive-item';
-item.innerHTML = `<span>${doc.invNum} - ${doc.name} (${doc.total}€)</span><button class="btn-del-arch" onclick="deleteArchiveItem(${doc.id})">✕</button>`;
+item.innerHTML = `<div class="archive-info"><span>${doc.invNum} - ${doc.name}</span><span>${doc.total} €</span></div><button class="btn-del-arch" onclick="deleteArch(${doc.id})">✕</button>`;
 list.appendChild(item);
 });
 }
 
-function deleteArchiveItem(id) {
+function deleteArch(id) {
 if(confirm("Löschen?")) {
 archive = archive.filter(d => d.id !== id);
 localStorage.setItem('d3d_archive', JSON.stringify(archive));
@@ -433,17 +349,11 @@ renderArchive();
 function loadStats() {
 const m = new Date().getMonth() + "_" + new Date().getFullYear();
 let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0};
-if(s.month !== m) { s.month = m; s.revenue = 0; localStorage.setItem('d3d_stats', JSON.stringify(s)); }
+if(s.month!==m){ s.month=m; s.revenue=0; }
 document.getElementById('monthlyRevenue').innerText = s.revenue.toFixed(2) + " €";
 }
 
-function resetStats() {
-if(confirm("Einnahmen wirklich auf 0 setzen?")) {
-const m = new Date().getMonth() + "_" + new Date().getFullYear();
-localStorage.setItem('d3d_stats', JSON.stringify({month:m, revenue:0}));
-loadStats();
-}
-}
+function resetStats() { if(confirm("Reset?")) { localStorage.setItem('d3d_stats', JSON.stringify({month:new Date().getMonth()+"_"+new Date().getFullYear(), revenue:0})); loadStats(); } }
 
 function importAddress() {
 const raw = document.getElementById('adrImport').value;
@@ -452,20 +362,37 @@ if(lines.length >= 3) {
 document.getElementById('rec-name').value = lines[0];
 document.getElementById('rec-street').value = lines[1];
 document.getElementById('rec-city').value = lines[2];
-const telMatch = raw.match(/(?:Tel|Phone|eBay|Name|Mobil|Handy|Nutzer):?\s*(.*)/i);
-if(telMatch) document.getElementById('rec-tel').value = telMatch[1];
 }
+}
+
+function renderShippingManager() {
+const container = document.getElementById('shipManager');
+container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand</h4>';
+shippingOptions.forEach((opt, i) => {
+const row = document.createElement('div'); row.className = 'ship-row';
+row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><button class="btn-s" style="background:#00a8ff" onclick="addItem('${opt.name}', '${opt.price}')">+</button>`;
+container.appendChild(row);
+});
+}
+
+function generateInvoiceNumber() {
+const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+const now = new Date();
+const prefix = `${months[now.getMonth()]}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
+const storageKey = `d3d_count_${prefix}`;
+let count = parseInt(localStorage.getItem(storageKey)) || 1;
+document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
 }
 
 function saveProduct() {
 const rows = document.querySelectorAll('#itemsBody tr');
 rows.forEach(row => {
-const n = row.querySelector('.prod-name').value;
-const p = row.querySelector('.price-field').value;
-if(n && p) {
-const i = products.findIndex(x => x.name === n);
-if(i > -1) products[i].price = p;
-else products.push({name:n, price:p});
+const name = row.querySelector('.prod-name').value;
+const price = row.querySelector('.price-field').value;
+if(name && price) {
+const index = products.findIndex(p => p.name === name);
+if(index > -1) products[index].price = price;
+else products.push({name: name, price: price});
 }
 });
 localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
@@ -475,7 +402,7 @@ alert("Produkte gespeichert!");
 
 function updateDatalist() {
 document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p.name}">`).join('');
-document.getElementById('prodDeleteSelect').innerHTML = '<option value="">Produkt löschen...</option>' + products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+document.getElementById('prodDeleteSelect').innerHTML = '<option value="">Wähle Produkt...</option>' + products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
 }
 
 function deleteProductFromSelect() {
@@ -487,36 +414,15 @@ updateDatalist();
 }
 }
 
-function renderShippingManager() {
-const container = document.getElementById('shipManager');
-container.innerHTML = '<strong style="color:var(--accent); font-size:12px;">Versand-Optionen</strong>';
-shippingOptions.forEach((opt, i) => {
-const row = document.createElement('div');
-row.className = 'ship-row';
-row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)}€)</div>
-<div class="ship-btns">
-<button class="btn-s" style="background:#00a8ff" onclick="addItem('${opt.name}', '${opt.price}')">+</button>
-<button class="btn-s" style="background:#ff4757" onclick="deleteShip(${i})">✕</button>
-</div>`;
-container.appendChild(row);
-});
-}
-
-function deleteShip(i) {
-shippingOptions.splice(i, 1);
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
 function updateDueDate() { const d = new Date(); d.setDate(d.getDate() + (parseInt(document.getElementById('dueDays').value) || 0)); document.getElementById('dueDate').value = d.toLocaleDateString('de-DE'); }
-function toggleType() {
-const t = document.getElementById('docType'), b = document.getElementById('typeBtn'), s = document.getElementById('statusSection'), m = document.querySelectorAll('.meta-hide');
-if(t.innerText === "RECHNUNG") { t.innerText = "ANGEBOT"; b.innerText = "ZU RECHNUNG"; s.style.display="none"; m.forEach(e=>e.style.display="none"); }
-else { t.innerText = "RECHNUNG"; b.innerText = "ZU ANGEBOT"; s.style.display="block"; m.forEach(e=>e.style.display="flex"); }
-}
-function clearForm() { if(confirm("Formular leeren?")) { document.querySelectorAll('.recipient input').forEach(i=>i.value=""); document.getElementById('itemsBody').innerHTML=""; generateInvoiceNumber(); for(let i=0; i<3; i++) addItem(); calc(); } }
 function markPers(btn) { const i = btn.closest('tr').querySelector('.prod-name'); if(!i.value.includes('(Personalisierte Anfertigung)')) { i.value += " (Personalisierte Anfertigung)"; } }
+function toggleType() {
+const t = document.getElementById('docType'), b = document.getElementById('typeBtn');
+if(t.innerText === "RECHNUNG") { t.innerText = "ANGEBOT"; b.innerText = "ZU RECHNUNG"; }
+else { t.innerText = "RECHNUNG"; b.innerText = "ZU ANGEBOT"; }
+}
+function clearForm() { if(confirm("Leeren?")) { document.querySelectorAll('.recipient input').forEach(i=>i.value=""); document.getElementById('itemsBody').innerHTML=""; generateInvoiceNumber(); for(let i=0; i<3; i++) addItem(); calc(); } }
 
 init();
 </script>
