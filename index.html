@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D3D Rechnungs-Tool</title>
+<title>D3D Rechnungs-Tool PRO</title>
 <style>
 :root {
 --ui-bg: #121416;
@@ -98,7 +98,6 @@ body { background: white; padding: 0; margin: 0; }
 box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none;
 margin: 0; position: relative; overflow: hidden;
 }
-/* FOOTER FIX: Absolut am unteren Rand des Containers fixiert */
 .footer-wrap {
 position: absolute;
 bottom: 1.5cm;
@@ -123,7 +122,7 @@ input { border: none !important; }
 <body>
 
 <div class="no-print">
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN/SPEICHERN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & SPEICHERN</button>
 <button onclick="sendMail()" style="background: #2980b9;">📧 PER E-MAIL SENDEN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
@@ -131,7 +130,7 @@ input { border: none !important; }
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
 
 <div class="import-area">
-<textarea id="adrImport" placeholder="Adresse einfügen..."></textarea>
+<textarea id="adrImport" placeholder="eBay Adresse hier reinkopieren..."></textarea>
 <button onclick="importAddress()" style="background: #00a8ff; width: auto; padding: 0 20px;">ADRESSE IMPORTIEREN</button>
 </div>
 
@@ -149,21 +148,21 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <div class="logo-text"><span>D</span>3D</div>
 <div class="meta-box">
 <div class="meta-row"><span>Datum:</span><input type="text" id="date"></div>
-<div class="meta-row"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
-<div class="meta-row"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
-<div class="meta-row"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
-<span class="meta-hint">(Rechnungsnummer bei Zahlung bitte angeben)</span>
+<div class="meta-row meta-hide"><span>Rechnungsnr.:</span><input type="text" id="invNum" value="J012601"></div>
+<div class="meta-row meta-hide"><span>Ziel (Tage):</span><input type="number" id="dueDays" value="14" oninput="updateDueDate()"></div>
+<div class="meta-row meta-hide"><span>Fällig am:</span><input type="text" id="dueDate" readonly></div>
+<span class="meta-hint meta-hide">(Rechnungsnummer bei Zahlung bitte angeben)</span>
 </div>
 </div>
 </div>
 
 <div class="recipient">
 <strong>Empfänger:</strong>
-<input type="text" id="rec-name" placeholder="Name">
+<input type="text" id="rec-name" placeholder="Vorname Nachname">
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
+<input type="text" id="rec-tel" placeholder="Handynummer / eBay Name">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -202,8 +201,8 @@ Kein Steuerausweis aufgrund der Anwendung der Kleinunternehmerregelung (§ 19 US
 Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlossen (§312 Abs. 2 Nr. 1 BGB).
 </div>
 <div class="bottom-line">
-<div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontakt</strong><br>Email-Adresse: kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
+<div><strong>D3D</strong><br>Graf-Sempt-Str. 27<br>85661 Forstinning</div>
+<div><strong>Kontakt</strong><br>kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
 <div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
@@ -334,8 +333,8 @@ calc();
 function sendMail() {
 const kunde = document.getElementById('rec-name').value || "Kunde";
 const nr = document.getElementById('invNum').value;
-const subject = encodeURIComponent(`Rechnung ${nr} - D3D`);
-const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie die Rechnung ${nr}.\n\nBeste Grüße,\nDominic Strzoda / D3D`);
+const subject = encodeURIComponent(`${document.getElementById('docType').innerText} ${nr} - D3D`);
+const body = encodeURIComponent(`Hallo ${kunde},\n\nanbei erhalten Sie das gewünschte ${document.getElementById('docType').innerText.toLowerCase()}.\n\nBeste Grüße,\nDominic Strzoda / D3D`);
 window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
@@ -363,15 +362,28 @@ document.getElementById('rec-city').value = lines[2];
 document.getElementById('rec-country').value = lines[3] || "Deutschland";
 }
 }
+
 function toggleType() {
 const type = document.getElementById('docType');
 const btn = document.getElementById('typeBtn');
+const statusSection = document.getElementById('statusSection');
+const metaHides = document.querySelectorAll('.meta-hide');
+
 if(type.innerText === "RECHNUNG") {
-type.innerText = "ANGEBOT"; btn.innerText = "ZU RECHNUNG";
+// Wechsel zu ANGEBOT
+type.innerText = "ANGEBOT";
+btn.innerText = "ZU RECHNUNG";
+statusSection.style.display = "none";
+metaHides.forEach(el => el.style.display = "none");
 } else {
-type.innerText = "RECHNUNG"; btn.innerText = "ZU ANGEBOT";
+// Wechsel zu RECHNUNG
+type.innerText = "RECHNUNG";
+btn.innerText = "ZU ANGEBOT";
+statusSection.style.display = "block";
+metaHides.forEach(el => el.style.display = "flex");
 }
 }
+
 function saveProduct() {
 const names = document.querySelectorAll('.prod-name');
 names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
