@@ -45,11 +45,12 @@ border-bottom: 1px solid #444; cursor: pointer; transition: 0.2s;
 .archive-item:hover { background: rgba(0, 168, 255, 0.2); }
 .archive-info { flex: 1; display: flex; justify-content: space-between; margin-right: 15px; }
 
-/* Kleines Rotes X für das Archiv */
+/* Kompakter Roter X-Button für Archiv (angepasst an Versand-Stil) */
 .btn-del-arch {
-width: 22px; height: 22px; background: #ff4757; color: white; border: none;
-border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;
+width: 28px; height: 28px; background: #ff4757; color: white; border: none;
+border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;
 display: flex; align-items: center; justify-content: center; transition: 0.2s;
+flex-shrink: 0;
 }
 .btn-del-arch:hover { background: #ff6b81; transform: scale(1.1); }
 
@@ -148,7 +149,7 @@ input { border: none !important; }
 <button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & ARCHIVIEREN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN (Inkl. Preis)</button>
 <button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
 <button onclick="clearForm()" style="background: #7f8c8d;">♻️ FORMULAR LEEREN</button>
 
@@ -191,7 +192,7 @@ Graf-Sempt-Str. 27, 85661 Forstinning<br>Deutschland
 <input type="text" id="rec-street" placeholder="Straße Hausnummer">
 <input type="text" id="rec-city" placeholder="PLZ Ort">
 <input type="text" id="rec-country" placeholder="Land">
-<input type="text" id="rec-tel" placeholder="Tel.-Nr.">
+<input type="text" id="rec-tel" placeholder="Tel.-Nr. / eBay Name">
 </div>
 
 <p style="font-size: 12px; margin: 15px 0 10px 0;" id="introText">Wir danken für Ihren Auftrag und berechnen diesen wie folgt:</p>
@@ -231,8 +232,8 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 </div>
 <div class="bottom-line">
 <div><strong>D3D</strong><br>Dominic Strzoda<br>Graf-Sempt-Str. 27<br>85661 Forstinning<br>Deutschland</div>
-<div><strong>Kontakt</strong><br>Email: kontakt.D3D@gmail.com<br>Geschäftsführer: Strzoda Dominic</div>
-<div><strong>Steuer</strong><br>Steuer-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
+<div><strong>Kontakt</strong><br>Email-Adresse: kontakt.D3D@gmail.com<br>GF: Strzoda Dominic</div>
+<div><strong>Steuer</strong><br>St-Nr: 112/279/00204<br>Ust-IdNr: DE455897359-00001</div>
 <div><strong>Bank</strong><br>IBAN: DE65 1001 1001 2856 6428 24<br>BIC: NTSBDEB1XXX</div>
 </div>
 </div>
@@ -318,7 +319,7 @@ list.appendChild(item);
 }
 
 function deleteFromArchive(event, id) {
-event.stopPropagation(); // Verhindert das Laden der Rechnung beim Klicken auf das X
+event.stopPropagation();
 if(confirm("Diese Rechnung wirklich aus dem Archiv löschen?")) {
 archive = archive.filter(d => d.id !== id);
 localStorage.setItem('d3d_archive', JSON.stringify(archive));
@@ -407,7 +408,54 @@ if(lines[4]) document.getElementById('rec-tel').value = lines[4];
 }
 }
 
-// RESTLICHE FUNKTIONEN
+// REPARATUR VERSAND MANAGER FUNKTIONEN
+function renderShippingManager() {
+const container = document.getElementById('shipManager');
+container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
+shippingOptions.forEach((opt, index) => {
+const row = document.createElement('div');
+row.className = 'ship-row';
+row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
+container.appendChild(row);
+});
+const addRow = document.createElement('div');
+addRow.className = 'ship-row'; addRow.style.background = 'rgba(46, 204, 113, 0.1)';
+addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neu...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
+container.appendChild(addRow);
+}
+
+function addNewShipping() {
+let n = prompt("Versandname (z.B. DHL Paket):");
+let p = prompt("Preis:");
+if(n && p) {
+shippingOptions.push({name:n, price:parseFloat(p.replace(',','.'))});
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function editShipping(index) {
+let opt = shippingOptions[index];
+let n = prompt("Name ändern:", opt.name);
+let p = prompt("Preis ändern:", opt.price);
+if(n && p) {
+shippingOptions[index] = {name: n, price: parseFloat(String(p).replace(',','.'))};
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function deleteShipping(index) {
+if(confirm("Diese Versandart löschen?")) {
+shippingOptions.splice(index, 1);
+localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
+renderShippingManager();
+}
+}
+
+function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
+
+// RESTLICHE CORE FUNKTIONEN
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
@@ -471,26 +519,6 @@ total += parseFloat(sub);
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function renderShippingManager() {
-const container = document.getElementById('shipManager');
-container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
-shippingOptions.forEach((opt, index) => {
-const row = document.createElement('div');
-row.className = 'ship-row';
-row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
-container.appendChild(row);
-});
-const addRow = document.createElement('div');
-addRow.className = 'ship-row'; addRow.style.background = 'rgba(46, 204, 113, 0.1)';
-addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neu...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
-container.appendChild(addRow);
-}
-
-function addNewShipping() {
-let n = prompt("Name:"), p = prompt("Preis:");
-if(n && p) { shippingOptions.push({name:n, price:parseFloat(p.replace(',','.'))}); localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions)); renderShippingManager(); }
-}
-function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
 function formatPrice(input) { let v = parseFloat(input.value.replace(',','.')); if(!isNaN(v)) input.value = v.toFixed(2); calc(); }
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
 function updateDueDate() { const d = new Date(); d.setDate(d.getDate() + (parseInt(document.getElementById('dueDays').value) || 0)); document.getElementById('dueDate').value = d.toLocaleDateString('de-DE'); }
@@ -509,4 +537,3 @@ init();
 </script>
 </body>
 </html>
-
