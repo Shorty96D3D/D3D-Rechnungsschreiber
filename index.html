@@ -39,11 +39,21 @@ margin-top: 10px; border: 1px dashed var(--accent);
 }
 .archive-list { max-height: 150px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
 .archive-item {
-display: flex; justify-content: space-between; padding: 5px;
-border-bottom: 1px solid #444; cursor: pointer;
+display: flex; justify-content: space-between; align-items: center; padding: 5px 8px;
+border-bottom: 1px solid #444; cursor: pointer; transition: 0.2s;
 }
-.archive-item:hover { background: var(--accent); color: white; }
-#archiveSearch { width: 100%; padding: 8px; border-radius: 4px; border: none; margin-bottom: 5px; }
+.archive-item:hover { background: rgba(0, 168, 255, 0.2); }
+.archive-info { flex: 1; display: flex; justify-content: space-between; margin-right: 15px; }
+
+/* Kleines Rotes X für das Archiv */
+.btn-del-arch {
+width: 22px; height: 22px; background: #ff4757; color: white; border: none;
+border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;
+display: flex; align-items: center; justify-content: center; transition: 0.2s;
+}
+.btn-del-arch:hover { background: #ff6b81; transform: scale(1.1); }
+
+#archiveSearch { width: 100%; padding: 8px; border-radius: 4px; border: none; margin-bottom: 5px; background: #1c1f22; color: white; }
 
 .stats-display {
 grid-column: span 3; background: rgba(0, 168, 255, 0.1);
@@ -231,7 +241,6 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 <datalist id="prodList"></datalist>
 
 <script>
-// Datenstrukturen
 let products = JSON.parse(localStorage.getItem('d3d_prods_v2')) || [];
 let archive = JSON.parse(localStorage.getItem('d3d_archive')) || [];
 let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
@@ -257,7 +266,7 @@ id: Date.now(),
 type: document.getElementById('docType').innerText,
 invNum: document.getElementById('invNum').value,
 date: document.getElementById('date').value,
-name: document.getElementById('rec-name').value,
+name: document.getElementById('rec-name').value || "Unbekannter Kunde",
 street: document.getElementById('rec-street').value,
 city: document.getElementById('rec-city').value,
 country: document.getElementById('rec-country').value,
@@ -281,7 +290,7 @@ price: row.querySelector('.price-field').value
 });
 
 archive.unshift(doc);
-if(archive.length > 100) archive.pop(); // Max 100 Einträge
+if(archive.length > 200) archive.pop();
 localStorage.setItem('d3d_archive', JSON.stringify(archive));
 renderArchive();
 }
@@ -297,10 +306,24 @@ doc.invNum.toLowerCase().includes(search)
 ).forEach(doc => {
 const item = document.createElement('div');
 item.className = 'archive-item';
-item.innerHTML = `<span>${doc.invNum} - ${doc.name}</span> <span>${doc.total} €</span>`;
-item.onclick = () => loadFromArchive(doc.id);
+item.innerHTML = `
+<div class="archive-info" onclick="loadFromArchive(${doc.id})">
+<span><strong>${doc.invNum}</strong> - ${doc.name}</span>
+<span>${doc.total} €</span>
+</div>
+<button class="btn-del-arch" onclick="deleteFromArchive(event, ${doc.id})">✕</button>
+`;
 list.appendChild(item);
 });
+}
+
+function deleteFromArchive(event, id) {
+event.stopPropagation(); // Verhindert das Laden der Rechnung beim Klicken auf das X
+if(confirm("Diese Rechnung wirklich aus dem Archiv löschen?")) {
+archive = archive.filter(d => d.id !== id);
+localStorage.setItem('d3d_archive', JSON.stringify(archive));
+renderArchive();
+}
 }
 
 function loadFromArchive(id) {
@@ -331,7 +354,7 @@ calc();
 }
 }
 
-// PRODUKT SPEICHERN (Inkl. Preis)
+// PRODUKT SPEICHERN
 function saveProduct() {
 const rows = document.querySelectorAll('#itemsBody tr');
 let count = 0;
@@ -367,30 +390,24 @@ toggleAutoFields(input);
 }
 }
 
-// ADRESSE IMPORT (Inkl. Tel)
+// ADRESSE IMPORT
 function importAddress() {
 const raw = document.getElementById('adrImport').value;
 const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
 if(lines.length >= 3) {
 document.getElementById('rec-name').value = lines[0];
 document.getElementById('rec-street').value = lines[1];
 document.getElementById('rec-city').value = lines[2];
-
-// Suche nach Telefon/eBay Namen in allen Zeilen
 const telMatch = raw.match(/(?:Tel|Phone|eBay|Name|Mobil|Handy):?\s*(.*)/i);
-if(telMatch) {
-document.getElementById('rec-tel').value = telMatch[1];
-} else if (lines[3]) {
+if(telMatch) document.getElementById('rec-tel').value = telMatch[1];
+else if (lines[3]) {
 document.getElementById('rec-country').value = lines[3];
 if(lines[4]) document.getElementById('rec-tel').value = lines[4];
-} else {
-document.getElementById('rec-country').value = "Deutschland";
-}
+} else document.getElementById('rec-country').value = "Deutschland";
 }
 }
 
-// STANDARDFUNKTIONEN (BEIBEHALTEN)
+// RESTLICHE FUNKTIONEN
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
@@ -407,7 +424,6 @@ const total = parseFloat(document.getElementById('grandTotal').innerText);
 const stats = JSON.parse(localStorage.getItem('d3d_stats')) || {revenue:0};
 stats.revenue += total;
 localStorage.setItem('d3d_stats', JSON.stringify(stats));
-
 const prefix = document.getElementById('invNum').value.slice(0, 5);
 const storageKey = `d3d_count_${prefix}`;
 localStorage.setItem(storageKey, (parseInt(localStorage.getItem(storageKey)) || 1) + 1);
@@ -474,7 +490,6 @@ function addNewShipping() {
 let n = prompt("Name:"), p = prompt("Preis:");
 if(n && p) { shippingOptions.push({name:n, price:parseFloat(p.replace(',','.'))}); localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions)); renderShippingManager(); }
 }
-
 function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
 function formatPrice(input) { let v = parseFloat(input.value.replace(',','.')); if(!isNaN(v)) input.value = v.toFixed(2); calc(); }
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
