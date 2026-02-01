@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D3D Rechnungs-Tool PRO</title>
+<title>D3D Rechnungs-Tool PRO + Archiv</title>
 <style>
 :root {
 --ui-bg: #121416;
@@ -31,6 +31,19 @@ padding: 15px; border-radius: 10px;
 width: 100%; padding: 12px; border-radius: 6px; border: none;
 cursor: pointer; font-weight: bold; color: white; font-size: 11px; transition: 0.2s;
 }
+
+/* Archiv Styling */
+.archive-area {
+grid-column: span 3; background: #2c3135; padding: 15px; border-radius: 6px;
+margin-top: 10px; border: 1px dashed var(--accent);
+}
+.archive-list { max-height: 150px; overflow-y: auto; margin-top: 10px; font-size: 11px; }
+.archive-item {
+display: flex; justify-content: space-between; padding: 5px;
+border-bottom: 1px solid #444; cursor: pointer;
+}
+.archive-item:hover { background: var(--accent); color: white; }
+#archiveSearch { width: 100%; padding: 8px; border-radius: 4px; border: none; margin-bottom: 5px; }
 
 .stats-display {
 grid-column: span 3; background: rgba(0, 168, 255, 0.1);
@@ -100,7 +113,6 @@ body { background: white; padding: 0; margin: 0; }
 .container { box-shadow: none; padding: 1.5cm; width: 210mm; height: 297mm; border: none; margin: 0; position: relative; overflow: hidden; }
 .footer-wrap { position: absolute; bottom: 1.5cm; left: 1.5cm; right: 1.5cm; margin: 0; }
 input { border: none !important; }
-/* Verstecke Telefon-Feld im Druck, wenn leer */
 #rec-tel:placeholder-shown { display: none !important; }
 }
 
@@ -110,7 +122,7 @@ input { border: none !important; }
 .addr-left { min-width: 100%; margin-bottom: 10px; }
 .meta-box { width: 100%; }
 .no-print { grid-template-columns: 1fr 1fr; }
-.import-area, .shipping-manager, .stats-display { grid-column: span 2; }
+.import-area, .shipping-manager, .stats-display, .archive-area { grid-column: span 2; }
 }
 </style>
 </head>
@@ -123,10 +135,10 @@ input { border: none !important; }
 <button onclick="resetStats()" style="width:auto; padding:5px 10px; background:#c0392b; font-size:9px;">RESET</button>
 </div>
 
-<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN/SPEICHERN</button>
+<button onclick="saveAndPrint()" style="background: #27ae60;">🖨️ DRUCKEN & ARCHIVIEREN</button>
 <button onclick="toggleType()" id="typeBtn" style="background: #8e44ad;">ZU ANGEBOT</button>
 <button onclick="addItem()" style="background: #2ecc71;">+ POSITION HINZUFÜGEN</button>
-<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN</button>
+<button onclick="saveProduct()" style="background: #f39c12;">💾 PRODUKT SPEICHERN (Inkl. Preis)</button>
 <button onclick="manageProducts()" style="background: #c0392b;">🗑️ PRODUKT LÖSCHEN</button>
 <button onclick="clearForm()" style="background: #7f8c8d;">♻️ FORMULAR LEEREN</button>
 
@@ -136,6 +148,12 @@ input { border: none !important; }
 </div>
 
 <div class="shipping-manager" id="shipManager"></div>
+
+<div class="archive-area">
+<h4 style="margin:0 0 10px 0; color:var(--accent)">Rechnungs-Archiv</h4>
+<input type="text" id="archiveSearch" placeholder="Suche nach Name oder Nr..." oninput="renderArchive()">
+<div class="archive-list" id="archiveList"></div>
+</div>
 </div>
 
 <div class="container" id="invoiceWrap">
@@ -213,7 +231,9 @@ Personalisierte und individuell angefertigte Waren sind vom Umtausch ausgeschlos
 <datalist id="prodList"></datalist>
 
 <script>
-let products = JSON.parse(localStorage.getItem('d3d_prods')) || ["Akkuhalter"];
+// Datenstrukturen
+let products = JSON.parse(localStorage.getItem('d3d_prods_v2')) || [];
+let archive = JSON.parse(localStorage.getItem('d3d_archive')) || [];
 let shippingOptions = JSON.parse(localStorage.getItem('d3d_shipping')) || [
 {name: "Versand (DHL Paket)", price: 5.49},
 {name: "Versand (Großbrief)", price: 2.25}
@@ -225,115 +245,175 @@ generateInvoiceNumber();
 updateDueDate();
 updateDatalist();
 renderShippingManager();
+renderArchive();
 loadStats();
 for(let i=0; i<3; i++) addItem();
 }
 
+// ARCHIV FUNKTIONEN
+function archiveCurrent() {
+const doc = {
+id: Date.now(),
+type: document.getElementById('docType').innerText,
+invNum: document.getElementById('invNum').value,
+date: document.getElementById('date').value,
+name: document.getElementById('rec-name').value,
+street: document.getElementById('rec-street').value,
+city: document.getElementById('rec-city').value,
+country: document.getElementById('rec-country').value,
+tel: document.getElementById('rec-tel').value,
+total: document.getElementById('grandTotal').innerText,
+status: document.getElementById('statusSelect').value,
+items: []
+};
+
+const rows = document.querySelectorAll('#itemsBody tr');
+rows.forEach(row => {
+const name = row.querySelector('.prod-name').value;
+if(name) {
+doc.items.push({
+name: name,
+qty: row.querySelector('.qty-field').value,
+unit: row.querySelector('.unit-field').value,
+price: row.querySelector('.price-field').value
+});
+}
+});
+
+archive.unshift(doc);
+if(archive.length > 100) archive.pop(); // Max 100 Einträge
+localStorage.setItem('d3d_archive', JSON.stringify(archive));
+renderArchive();
+}
+
+function renderArchive() {
+const list = document.getElementById('archiveList');
+const search = document.getElementById('archiveSearch').value.toLowerCase();
+list.innerHTML = "";
+
+archive.filter(doc =>
+doc.name.toLowerCase().includes(search) ||
+doc.invNum.toLowerCase().includes(search)
+).forEach(doc => {
+const item = document.createElement('div');
+item.className = 'archive-item';
+item.innerHTML = `<span>${doc.invNum} - ${doc.name}</span> <span>${doc.total} €</span>`;
+item.onclick = () => loadFromArchive(doc.id);
+list.appendChild(item);
+});
+}
+
+function loadFromArchive(id) {
+const doc = archive.find(d => d.id === id);
+if(!doc) return;
+
+if(confirm("Rechnung laden? Aktuelle Daten werden überschrieben.")) {
+document.getElementById('docType').innerText = doc.type;
+document.getElementById('invNum').value = doc.invNum;
+document.getElementById('date').value = doc.date;
+document.getElementById('rec-name').value = doc.name;
+document.getElementById('rec-street').value = doc.street;
+document.getElementById('rec-city').value = doc.city;
+document.getElementById('rec-country').value = doc.country;
+document.getElementById('rec-tel').value = doc.tel;
+
+const body = document.getElementById('itemsBody');
+body.innerHTML = "";
+doc.items.forEach(item => {
+addItem(item.name, item.price);
+const lastRow = body.lastElementChild;
+lastRow.querySelector('.qty-field').value = item.qty;
+lastRow.querySelector('.unit-field').value = item.unit;
+});
+document.getElementById('statusSelect').value = doc.status;
+updateStatus();
+calc();
+}
+}
+
+// PRODUKT SPEICHERN (Inkl. Preis)
+function saveProduct() {
+const rows = document.querySelectorAll('#itemsBody tr');
+let count = 0;
+rows.forEach(row => {
+const name = row.querySelector('.prod-name').value;
+const price = row.querySelector('.price-field').value;
+if(name && price) {
+const index = products.findIndex(p => p.name === name);
+if(index > -1) products[index].price = price;
+else products.push({name: name, price: price});
+count++;
+}
+});
+localStorage.setItem('d3d_prods_v2', JSON.stringify(products));
+updateDatalist();
+alert(count + " Produkte/Preise gespeichert!");
+}
+
+function updateDatalist() {
+document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p.name}">`).join('');
+}
+
+function handleProdInput(input) {
+const name = input.value;
+const found = products.find(p => p.name === name);
+if(found) {
+const row = input.closest('tr');
+row.querySelector('.price-field').value = found.price;
+toggleAutoFields(input);
+calc();
+} else {
+toggleAutoFields(input);
+}
+}
+
+// ADRESSE IMPORT (Inkl. Tel)
+function importAddress() {
+const raw = document.getElementById('adrImport').value;
+const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+if(lines.length >= 3) {
+document.getElementById('rec-name').value = lines[0];
+document.getElementById('rec-street').value = lines[1];
+document.getElementById('rec-city').value = lines[2];
+
+// Suche nach Telefon/eBay Namen in allen Zeilen
+const telMatch = raw.match(/(?:Tel|Phone|eBay|Name|Mobil|Handy):?\s*(.*)/i);
+if(telMatch) {
+document.getElementById('rec-tel').value = telMatch[1];
+} else if (lines[3]) {
+document.getElementById('rec-country').value = lines[3];
+if(lines[4]) document.getElementById('rec-tel').value = lines[4];
+} else {
+document.getElementById('rec-country').value = "Deutschland";
+}
+}
+}
+
+// STANDARDFUNKTIONEN (BEIBEHALTEN)
 function generateInvoiceNumber() {
 const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const now = new Date();
-const monthChar = months[now.getMonth()];
-const monthNum = String(now.getMonth() + 1).padStart(2, '0');
-const yearShort = String(now.getFullYear()).slice(-2);
-const prefix = `${monthChar}${monthNum}${yearShort}`;
+const prefix = `${months[now.getMonth()]}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
 const storageKey = `d3d_count_${prefix}`;
 let count = parseInt(localStorage.getItem(storageKey)) || 1;
 document.getElementById('invNum').value = `${prefix}${String(count).padStart(2, '0')}`;
 }
 
-function loadStats() {
-const currentMonth = new Date().getMonth() + "_" + new Date().getFullYear();
-const stats = JSON.parse(localStorage.getItem('d3d_stats')) || { month: currentMonth, revenue: 0 };
-if(stats.month !== currentMonth) {
-stats.month = currentMonth; stats.revenue = 0;
-localStorage.setItem('d3d_stats', JSON.stringify(stats));
-}
-document.getElementById('monthlyRevenue').innerText = stats.revenue.toFixed(2) + " €";
-}
-
 function saveAndPrint() {
+archiveCurrent();
 if(document.getElementById('docType').innerText === "RECHNUNG") {
 const total = parseFloat(document.getElementById('grandTotal').innerText);
-const stats = JSON.parse(localStorage.getItem('d3d_stats'));
+const stats = JSON.parse(localStorage.getItem('d3d_stats')) || {revenue:0};
 stats.revenue += total;
 localStorage.setItem('d3d_stats', JSON.stringify(stats));
-const currentInv = document.getElementById('invNum').value;
-const prefix = currentInv.slice(0, 5);
+
+const prefix = document.getElementById('invNum').value.slice(0, 5);
 const storageKey = `d3d_count_${prefix}`;
-let count = parseInt(localStorage.getItem(storageKey)) || 1;
-localStorage.setItem(storageKey, count + 1);
+localStorage.setItem(storageKey, (parseInt(localStorage.getItem(storageKey)) || 1) + 1);
 loadStats();
 }
 window.print();
-}
-
-function resetStats() {
-if(confirm("Umsatz-Tracker für diesen Monat wirklich auf 0 setzen?")) {
-const currentMonth = new Date().getMonth() + "_" + new Date().getFullYear();
-localStorage.setItem('d3d_stats', JSON.stringify({ month: currentMonth, revenue: 0 }));
-loadStats();
-}
-}
-
-function clearForm() {
-if(confirm("Formular wirklich leeren?")) {
-document.getElementById('rec-name').value = "";
-document.getElementById('rec-street').value = "";
-document.getElementById('rec-city').value = "";
-document.getElementById('rec-country').value = "";
-document.getElementById('rec-tel').value = "";
-document.getElementById('itemsBody').innerHTML = "";
-document.getElementById('statusLabel').innerText = "";
-document.getElementById('statusSelect').value = "";
-generateInvoiceNumber();
-for(let i=0; i<3; i++) addItem();
-calc();
-}
-}
-
-function renderShippingManager() {
-const container = document.getElementById('shipManager');
-container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
-shippingOptions.forEach((opt, index) => {
-const row = document.createElement('div');
-row.className = 'ship-row';
-row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
-container.appendChild(row);
-});
-// WIEDER EINGEBAUT: Balken zum Hinzufügen neuer Optionen
-const addRow = document.createElement('div');
-addRow.className = 'ship-row';
-addRow.style.background = 'rgba(46, 204, 113, 0.1)';
-addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neue Option hinzufügen...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
-container.appendChild(addRow);
-}
-
-function addNewShipping() {
-let name = prompt("Versand-Bezeichnung:");
-let price = prompt("Preis (z.B. 5.49):");
-if(name && price) {
-shippingOptions.push({name: name, price: parseFloat(price.replace(',','.')) || 0});
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function editShipping(index) {
-let name = prompt("Name:", shippingOptions[index].name);
-let price = prompt("Preis:", shippingOptions[index].price);
-if(name && price) {
-shippingOptions[index] = {name: name, price: parseFloat(price.replace(',','.')) || 0};
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
-}
-
-function deleteShipping(index) {
-if(confirm("Löschen?")) {
-shippingOptions.splice(index, 1);
-localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions));
-renderShippingManager();
-}
 }
 
 function addItem(name = "", price = "") {
@@ -341,7 +421,7 @@ const body = document.getElementById('itemsBody');
 const row = body.insertRow();
 row.innerHTML = `
 <td style="text-align:center">${body.rows.length}</td>
-<td><input class="table-input prod-name" list="prodList" value="${name}" oninput="toggleAutoFields(this)"></td>
+<td><input class="table-input prod-name" list="prodList" value="${name}" oninput="handleProdInput(this)"></td>
 <td><input type="number" class="table-input qty-field" value="" oninput="calc()" style="visibility: hidden;"></td>
 <td><input class="table-input unit-field" value="" style="visibility: hidden;"></td>
 <td><input type="number" class="table-input price-field" value="${price}" step="0.01" onblur="formatPrice(this)" oninput="calc()"></td>
@@ -359,78 +439,57 @@ qty.style.visibility = "visible"; unit.style.visibility = "visible";
 if(qty.value === "") qty.value = 1;
 if(unit.value === "") unit.value = "Stück";
 } else { qty.style.visibility = "hidden"; unit.style.visibility = "hidden"; }
-calc();
 }
 
 function calc() {
 let total = 0;
-const rows = document.getElementById('itemsBody').rows;
-for (let i = 0; i < rows.length; i++) {
-rows[i].cells[0].innerText = i + 1;
-const q = rows[i].querySelector('.qty-field').value || 0;
-const p = rows[i].querySelector('.price-field').value || 0;
+const rows = document.querySelectorAll('#itemsBody tr');
+rows.forEach((row, i) => {
+row.cells[0].innerText = i + 1;
+const q = row.querySelector('.qty-field').value || 0;
+const p = row.querySelector('.price-field').value || 0;
 const sub = q * p;
-rows[i].querySelector('.row-total').innerText = sub > 0 ? sub.toFixed(2) : "";
+row.querySelector('.row-total').innerText = sub > 0 ? sub.toFixed(2) : "";
 total += parseFloat(sub);
-}
+});
 document.getElementById('grandTotal').innerText = total.toFixed(2);
 }
 
-function formatPrice(input) {
-let val = parseFloat(input.value.replace(',','.'));
-if (!isNaN(val)) input.value = val.toFixed(2);
-calc();
+function renderShippingManager() {
+const container = document.getElementById('shipManager');
+container.innerHTML = '<h4 style="margin:0 0 5px 0; color:var(--accent)">Versand-Optionen</h4>';
+shippingOptions.forEach((opt, index) => {
+const row = document.createElement('div');
+row.className = 'ship-row';
+row.innerHTML = `<div class="ship-info">${opt.name} (${opt.price.toFixed(2)} €)</div><div class="ship-btns"><button class="btn-s" style="background:#00a8ff" onclick="addShipping(${index})">+</button><button class="btn-s" style="background:#2ecc71" onclick="editShipping(${index})">⚙</button><button class="btn-s" style="background:#ff4757" onclick="deleteShipping(${index})">✕</button></div>`;
+container.appendChild(row);
+});
+const addRow = document.createElement('div');
+addRow.className = 'ship-row'; addRow.style.background = 'rgba(46, 204, 113, 0.1)';
+addRow.innerHTML = `<div class="ship-info" style="color:#2ecc71">Neu...</div><div class="ship-btns"><button class="btn-s" style="background:#2ecc71" onclick="addNewShipping()">+</button></div>`;
+container.appendChild(addRow);
 }
 
+function addNewShipping() {
+let n = prompt("Name:"), p = prompt("Preis:");
+if(n && p) { shippingOptions.push({name:n, price:parseFloat(p.replace(',','.'))}); localStorage.setItem('d3d_shipping', JSON.stringify(shippingOptions)); renderShippingManager(); }
+}
+
+function addShipping(i) { addItem(shippingOptions[i].name, shippingOptions[i].price.toFixed(2)); }
+function formatPrice(input) { let v = parseFloat(input.value.replace(',','.')); if(!isNaN(v)) input.value = v.toFixed(2); calc(); }
 function updateStatus() { document.getElementById('statusLabel').innerText = document.getElementById('statusSelect').value; }
-function updateDatalist() { document.getElementById('prodList').innerHTML = products.map(p => `<option value="${p}">`).join(''); }
-function updateDueDate() {
-const days = parseInt(document.getElementById('dueDays').value) || 0;
-const d = new Date(); d.setDate(d.getDate() + days);
-document.getElementById('dueDate').value = d.toLocaleDateString('de-DE');
-}
-function markPers(btn) {
-const input = btn.closest('tr').querySelector('.prod-name');
-if(!input.value.includes('(Personalisierte Anfertigung)')) {
-input.value += " (Personalisierte Anfertigung)"; toggleAutoFields(input);
-}
-}
-function importAddress() {
-const raw = document.getElementById('adrImport').value;
-const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-if(lines.length >= 3) {
-document.getElementById('rec-name').value = lines[0];
-document.getElementById('rec-street').value = lines[1];
-document.getElementById('rec-city').value = lines[2];
-document.getElementById('rec-country').value = lines[3] || "Deutschland";
-}
-}
-
+function updateDueDate() { const d = new Date(); d.setDate(d.getDate() + (parseInt(document.getElementById('dueDays').value) || 0)); document.getElementById('dueDate').value = d.toLocaleDateString('de-DE'); }
+function loadStats() { const m = new Date().getMonth() + "_" + new Date().getFullYear(); let s = JSON.parse(localStorage.getItem('d3d_stats')) || {month:m, revenue:0}; if(s.month!==m){s.month=m; s.revenue=0;} document.getElementById('monthlyRevenue').innerText = s.revenue.toFixed(2) + " €"; }
+function resetStats() { if(confirm("Reset?")) { localStorage.setItem('d3d_stats', JSON.stringify({month:new Date().getMonth()+"_"+new Date().getFullYear(), revenue:0})); loadStats(); } }
+function markPers(btn) { const i = btn.closest('tr').querySelector('.prod-name'); if(!i.value.includes('(Personalisierte Anfertigung)')) { i.value += " (Personalisierte Anfertigung)"; handleProdInput(i); } }
 function toggleType() {
-const type = document.getElementById('docType');
-const btn = document.getElementById('typeBtn');
-const statusSection = document.getElementById('statusSection');
-const metaHides = document.querySelectorAll('.meta-hide');
-if(type.innerText === "RECHNUNG") {
-type.innerText = "ANGEBOT"; btn.innerText = "ZU RECHNUNG";
-statusSection.style.display = "none"; metaHides.forEach(el => el.style.display = "none");
-} else {
-type.innerText = "RECHNUNG"; btn.innerText = "ZU ANGEBOT";
-statusSection.style.display = "block"; metaHides.forEach(el => el.style.display = "flex");
+const t = document.getElementById('docType'), b = document.getElementById('typeBtn'), s = document.getElementById('statusSection'), m = document.querySelectorAll('.meta-hide');
+if(t.innerText === "RECHNUNG") { t.innerText = "ANGEBOT"; b.innerText = "ZU RECHNUNG"; s.style.display="none"; m.forEach(e=>e.style.display="none"); }
+else { t.innerText = "RECHNUNG"; b.innerText = "ZU ANGEBOT"; s.style.display="block"; m.forEach(e=>e.style.display="flex"); }
 }
-}
+function clearForm() { if(confirm("Leeren?")) { document.querySelectorAll('.recipient input').forEach(i=>i.value=""); document.getElementById('itemsBody').innerHTML=""; generateInvoiceNumber(); for(let i=0; i<3; i++) addItem(); calc(); } }
+function manageProducts() { let t = prompt("Löschen (Name eingeben):\n" + products.map(p=>p.name).join(", ")); if(t) { products = products.filter(p=>p.name!==t); localStorage.setItem('d3d_prods_v2', JSON.stringify(products)); updateDatalist(); } }
 
-function saveProduct() {
-const names = document.querySelectorAll('.prod-name');
-names.forEach(n => { if(n.value && !products.includes(n.value)) products.push(n.value); });
-localStorage.setItem('d3d_prods', JSON.stringify(products));
-updateDatalist(); alert("Produkte gespeichert!");
-}
-function manageProducts() {
-let toDelete = prompt("Löschen:\n" + products.join(", "));
-if(toDelete) { products = products.filter(p => p !== toDelete); localStorage.setItem('d3d_prods', JSON.stringify(products)); updateDatalist(); }
-}
-function addShipping(index) { addItem(shippingOptions[index].name, shippingOptions[index].price.toFixed(2)); }
 init();
 </script>
 </body>
